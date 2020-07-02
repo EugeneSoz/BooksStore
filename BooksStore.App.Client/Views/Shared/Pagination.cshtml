@@ -1,0 +1,17 @@
+﻿@model Pagination
+
+@if (Model != null)
+{
+    <ul class="pagination">
+        <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-double-left"></i></a></li>
+        <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-left"></i></a></li>
+
+        @foreach (var pageNumber in Model.PageNumbers)
+        {
+            <li class="page-item"><a class="page-link" href="#">@pageNumber</a></li>
+        }
+
+        <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-right"></i></a></li>
+        <li class="page-item"><a class="page-link" href="#"><i class="fas fa-angle-double-right"></i></a></li>
+    </ul>
+}

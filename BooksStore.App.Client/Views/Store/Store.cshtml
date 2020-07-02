@@ -1,0 +1,41 @@
+﻿@model BooksInfo
+
+@{
+    Layout = "_StoreLayout";
+}
+
+<div class="row no-gutters">
+    <div id="store-sidebar" class="col-lg-auto">
+        @*<StoreSidebarComponent />*@
+    </div>
+    <div id="store-main-content" class="col-lg">
+        @if (Model.Books != null)
+        {
+            <div id="store-scrollable-content" class="pl-3">
+                @foreach (var row in Model.Books.Keys)
+                {
+                    <div class="row no-gutters">
+                        @foreach (var book in Model.Books[row])
+                        {
+                            @if (book != null)
+                            {
+                                <div class="col">
+                                    <partial name="BookCard" model="book" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col"></div>
+                            }
+
+                        }
+
+                    </div>
+                }
+            </div>
+            <div class="px-3 py-2 bg-light">
+                <partial name="Pagination" model="Model.Pagination"/>
+            </div>
+        }
+    </div>
+</div>
