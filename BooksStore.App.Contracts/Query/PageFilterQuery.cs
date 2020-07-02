@@ -1,6 +1,6 @@
 ﻿namespace BooksStore.App.Contracts.Query
 {
-    public class PageFilterQuery : BooksStore.App.Contracts.Query.Query
+    public class PageFilterQuery : Query
     {
         public int CurrentPage { get; set; } = 1;
         public int PageSize { get; set; } = 10;

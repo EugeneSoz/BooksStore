@@ -18,7 +18,7 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public PagedList<PublisherEntity> GetPublishers(QueryOptions options)
+        public PagedList<PublisherEntity> GetPublishers(PageOptions options)
         {
             if (string.IsNullOrEmpty(options.SortPropertyName))
             {
@@ -28,7 +28,7 @@ namespace BooksStore.Persistence.Repositories
             const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
                                    FROM Publishers";
 
-            var queryProcessing = new QueryProcessing<QueryOptions>(options);
+            var queryProcessing = new QueryProcessing<PageOptions>(options);
             var sql = $@"SELECT *
                                 FROM Publishers {queryProcessing.GetQueryConditions()}";
             using (var connection = _connectionProvider.OpenConnection())
@@ -36,7 +36,7 @@ namespace BooksStore.Persistence.Repositories
                 var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
                 var publishers = connection.Query<PublisherEntity>(sql);
 
-                return new PagedList<PublisherEntity>(publishers, rowsCount, options);
+                return new PagedList<PublisherEntity>();
             }
         }
 

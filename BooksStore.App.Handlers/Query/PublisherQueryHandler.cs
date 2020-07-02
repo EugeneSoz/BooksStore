@@ -7,13 +7,12 @@ using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Domain.Contracts.Repositories;
 using OnlineBooksStore.App.Handlers.Interfaces;
-using OnlineBooksStore.App.Handlers.Mapping;
 using OnlineBooksStore.Domain.Contracts.Models.Publishers;
 
 namespace BooksStore.App.Handlers.Query
 {
     public class PublisherQueryHandler : 
-        IQueryHandler<PageFilterQuery, PagedResponse<PublisherResponse>>,
+        IQueryHandler<PageFilterQuery, PagedList<PublisherResponse>>,
         IQueryHandler<SearchTermQuery, List<PublisherResponse>>,
         IQueryHandler<PublisherIdQuery, Publisher>
     {
@@ -24,20 +23,19 @@ namespace BooksStore.App.Handlers.Query
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public PagedResponse<PublisherResponse> Handle(PageFilterQuery query)
+        public PagedList<PublisherResponse> Handle(PageFilterQuery query)
         {
             var options = query.MapQueryOptions();
             var publisherEntities = _repository.GetPublishers(options);
 
             var publishersPagedList = publisherEntities.MapPublisherResponsePagedList();
-            var result = publishersPagedList.MapPagedResponse();
 
-            return result;
+            return publishersPagedList;
         }
 
         public List<PublisherResponse> Handle(SearchTermQuery query)
         {
-            QueryOptions options = new QueryOptions
+            PageOptions options = new PageOptions
             {
                 SearchTerm = query.Value,
                 SearchPropertyNames = new[] { nameof(Publisher.Name) },

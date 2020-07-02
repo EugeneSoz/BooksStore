@@ -88,9 +88,6 @@ namespace BooksStore.App.Handlers.Mapping
         {
             return new PagedList<CategoryResponse>()
             {
-                CurrentPage = pagedList.CurrentPage,
-                PageSize = pagedList.PageSize,
-                TotalPages = pagedList.TotalPages,
                 Entities = pagedList.Entities.Select(e => new CategoryResponse
                 {
                     Id = e.Id,

@@ -5,7 +5,7 @@ using OnlineBooksStore.Domain.Contracts.Models.Publishers;
 
 namespace BooksStore.Domain.Contracts.Models.Pages
 {
-    public class QueryOptions
+    public class PageOptions
     {
         private string _sortPropertyName = string.Empty;
         private string _filterPropertyName = string.Empty;

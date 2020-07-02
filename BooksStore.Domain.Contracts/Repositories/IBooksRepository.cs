@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Persistence.Entities;
 
@@ -6,7 +7,7 @@ namespace BooksStore.Domain.Contracts.Repositories
 {
     public interface IBooksRepository
     {
-        PagedList<BookEntity> GetBooks(QueryOptions options);
+        (int count, List<BookEntity> books) GetBooks(PageOptions options);
         IEnumerable<BookEntity> GetSomeBooks(IEnumerable<long> booksIds);
         BookEntity GetBook(long key);
         BookEntity AddBook(BookEntity book);

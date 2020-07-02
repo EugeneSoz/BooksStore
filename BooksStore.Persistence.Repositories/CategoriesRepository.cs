@@ -18,7 +18,7 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public PagedList<CategoryEntity> GetCategories(QueryOptions options)
+        public PagedList<CategoryEntity> GetCategories(PageOptions options)
         {
             if (string.IsNullOrEmpty(options.SortPropertyName))
             {
@@ -31,7 +31,7 @@ namespace BooksStore.Persistence.Repositories
 
             const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
                                    FROM Categories";
-            var queryProcessing = new QueryProcessing<QueryOptions>(options);
+            var queryProcessing = new QueryProcessing<PageOptions>(options);
             var sql = $@"SELECT *
                           FROM Categories AS P
                                    LEFT JOIN Categories AS C ON P.Id = C.ParentId AND P.ParentId IS NULL
@@ -56,7 +56,7 @@ namespace BooksStore.Persistence.Repositories
                         return categoryEntry;
                     }, splitOn: nameof(CategoryEntity.Id)).ToList();
 
-                return new PagedList<CategoryEntity>(result, rowsCount, options);
+                return new PagedList<CategoryEntity>();
             }
         }
 

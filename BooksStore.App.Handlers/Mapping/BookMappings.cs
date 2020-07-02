@@ -49,35 +49,5 @@ namespace BooksStore.App.Handlers.Mapping
                 PublisherId = command.PublisherId
             };
         }
-
-        public static PagedList<BookResponse> MapBookResponsePagedList(this PagedList<BookEntity> pagedList)
-        {
-            return new PagedList<BookResponse>()
-            {
-                CurrentPage = pagedList.CurrentPage,
-                PageSize = pagedList.PageSize,
-                TotalPages = pagedList.TotalPages,
-                Entities = pagedList.Entities.Select(e => new BookResponse
-                {
-                    Id = e.Id,
-                    Authors = e.Authors,
-                    BookCover = e.BookCover,
-                    Language = e.Language,
-                    Title = e.Title,
-                    Year = e.Year,
-                    CategoryId = e.CategoryId,
-                    PublisherId = e.PublisherId,
-                    Description = e.Description,
-                    PageCount = e.PageCount,
-                    PurchasePrice = e.PurchasePrice,
-                    RetailPrice = e.RetailPrice,
-                    CategoryName = e.Category.ParentCategory == null 
-                        ? string.Empty 
-                        : e.Category.ParentCategory.Name,
-                    SubcategoryName = e.Category.Name,
-                    PublisherName = e.Publisher.Name
-                }).ToList()
-            };
-        }
     }
 }

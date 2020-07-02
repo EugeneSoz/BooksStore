@@ -13,7 +13,7 @@ using OnlineBooksStore.Domain.Contracts.Models.Categories;
 
 namespace BooksStore.App.Handlers.Query
 {
-    public class CategoryQueryHandler : IQueryHandler<PageFilterQuery, PagedResponse<CategoryResponse>>,
+    public class CategoryQueryHandler : IQueryHandler<PageFilterQuery, PagedList<CategoryResponse>>,
         IQueryHandler<EntityIdQuery, Category>,
         IQueryHandler<CategoryQuery, List<Category>>,
         IQueryHandler<SearchTermQuery, List<CategoryResponse>>,
@@ -26,15 +26,14 @@ namespace BooksStore.App.Handlers.Query
             _categoriesRepository = categoriesRepository ?? throw new ArgumentNullException(nameof(categoriesRepository));
         }
 
-        public PagedResponse<CategoryResponse> Handle(PageFilterQuery query)
+        public PagedList<CategoryResponse> Handle(PageFilterQuery query)
         {
             var options = query.MapQueryOptions();
             var categoryEntities = _categoriesRepository.GetCategories(options);
 
             var categoriesPagedList = categoryEntities.MapCategoryResponsePagedList();
-            var result = categoriesPagedList.MapPagedResponse();
 
-            return result;
+            return categoriesPagedList;
         }
 
         public Category Handle(EntityIdQuery query)
@@ -55,7 +54,7 @@ namespace BooksStore.App.Handlers.Query
 
         public List<CategoryResponse> Handle(SearchTermQuery query)
         {
-            QueryOptions options = new QueryOptions
+            PageOptions options = new PageOptions
             {
                 SearchTerm = query.Value,
                 SearchPropertyNames = new[] { nameof(CategoryEntity.Name) },
@@ -65,9 +64,8 @@ namespace BooksStore.App.Handlers.Query
 
             var categoryEntities = _categoriesRepository.GetCategories(options);
             var categoriesPagedList = categoryEntities.MapCategoryResponsePagedList();
-            var result = categoriesPagedList.MapPagedResponse();
 
-            return result.Entities;
+            return categoriesPagedList.Entities;
         }
 
         public List<StoreCategoryResponse> Handle(StoreCategoryQuery query)

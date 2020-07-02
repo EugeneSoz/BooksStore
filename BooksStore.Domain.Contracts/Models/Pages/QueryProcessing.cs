@@ -8,9 +8,9 @@ namespace BooksStore.Domain.Contracts.Models.Pages
 {
     public class QueryProcessing<T>
     {
-        private readonly QueryOptions _options;
+        private readonly PageOptions _options;
 
-        public QueryProcessing(QueryOptions options)
+        public QueryProcessing(PageOptions options)
         {
             _options = options;
         }
