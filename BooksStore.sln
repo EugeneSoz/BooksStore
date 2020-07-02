@@ -15,6 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksStore.Persistence.Enti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksStore.Persistence.Repositories", "BooksStore.Persistence.Repositories\BooksStore.Persistence.Repositories.csproj", "{B98E4B4E-12B2-49A2-9FD5-7F4D37DAC2C9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{05C091DA-ADDB-49F8-87C2-40DF88CFD4D0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{8009F13D-FAA9-4FC6-B4A5-E4A501313769}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{37454BFF-8D8E-4AF7-A795-0AB2BFABF29C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +54,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FB37AAFF-89D4-4795-9609-7B116238099B} = {05C091DA-ADDB-49F8-87C2-40DF88CFD4D0}
+		{4F6462D0-BF21-4D52-9E45-1EA8C48FB83E} = {05C091DA-ADDB-49F8-87C2-40DF88CFD4D0}
+		{AE460EF6-6548-43A4-B3CA-6F64485FADD7} = {05C091DA-ADDB-49F8-87C2-40DF88CFD4D0}
+		{38AA07E2-9B38-464A-A9D8-E0D8C3B5038E} = {8009F13D-FAA9-4FC6-B4A5-E4A501313769}
+		{D38FC592-9AD5-4531-9AE3-0A411C72EFCF} = {37454BFF-8D8E-4AF7-A795-0AB2BFABF29C}
+		{B98E4B4E-12B2-49A2-9FD5-7F4D37DAC2C9} = {37454BFF-8D8E-4AF7-A795-0AB2BFABF29C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E35A47D6-2742-4E2E-8A6C-08DCA145D4F2}
