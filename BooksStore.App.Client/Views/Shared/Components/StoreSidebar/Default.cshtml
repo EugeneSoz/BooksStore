@@ -1,0 +1,41 @@
+﻿@model List<StoreCategoryResponse>
+
+<nav id="sidebar">
+    <div class="sidebar-header">
+        <h5>Личный кабинет</h5>
+    </div>
+
+    <ul class="list-unstyled components">
+        <li>
+            <a asp-action="ShowBooks" asp-controller="Store"
+               asp-route-category="0"
+               asp-route-page="1">Все категории</a>
+        </li>
+        @foreach (var category in Model)
+        {
+            if (category.HasChildren)
+            {
+                <li>
+                    <a href="#@category.ControlId" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">@category.Name</a>
+                    <ul class="collapse list-unstyled" id="@category.ControlId">
+                        @foreach (var child in category.Children)
+                        {
+                            <li>
+                                <a asp-action="ShowBooks" asp-controller="Store"
+                                   asp-route-category="@child.Id"
+                                   asp-route-page="1">@child.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a href="#">@category.Name</a>
+                </li>
+            }
+        }
+
+    </ul>
+</nav>

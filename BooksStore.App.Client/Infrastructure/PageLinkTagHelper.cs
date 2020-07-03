@@ -23,6 +23,10 @@ namespace BooksStore.App.Client.Infrastructure
         public Pagination PageModel { get; set; }
         public string PageAction { get; set; }
 
+        [HtmlAttributeName(DictionaryAttributePrefix = "page-url-")]
+        public Dictionary<string, object> PageUrlValues { get; set; }
+            = new Dictionary<string, object>();
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var urlHelper = _urlHelperFactory.GetUrlHelper(ViewContext);
@@ -76,7 +80,8 @@ namespace BooksStore.App.Client.Infrastructure
             var item = new TagBuilder("li");
             var link = new TagBuilder("a");
 
-            link.Attributes["href"] = urlHelper.Action(PageAction, new {page = pageNumber});
+            PageUrlValues["page"] = pageNumber;
+            link.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);
             item.AddCssClass(CheckIfDisabled(buttonType) ? "page-item disabled" : "page-item");
 
             link.AddCssClass("page-link");
@@ -91,7 +96,8 @@ namespace BooksStore.App.Client.Infrastructure
         {
             var item = new TagBuilder("li");
             var link = new TagBuilder("a");
-            link.Attributes["href"] = urlHelper.Action(PageAction, new {page = pageNumber});
+            PageUrlValues["page"] = pageNumber;
+            link.Attributes["href"] = urlHelper.Action(PageAction, PageUrlValues);
             item.AddCssClass(pageNumber == PageModel.CurrentPage ? "page-item active" : "page-item");
             link.AddCssClass("page-link");
             link.InnerHtml.Append(pageNumber.ToString());

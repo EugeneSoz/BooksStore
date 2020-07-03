@@ -7,7 +7,6 @@ using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Persistence.Entities;
-using OnlineBooksStore.App.Contracts.Query;
 using OnlineBooksStore.App.Handlers.Interfaces;
 using OnlineBooksStore.App.Handlers.Mapping;
 using OnlineBooksStore.Domain.Contracts.Models.Categories;

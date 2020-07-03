@@ -6,7 +6,7 @@
 
 <div class="row no-gutters">
     <div id="store-sidebar" class="col-lg-auto">
-        @*<StoreSidebarComponent />*@
+        <vc:store-sidebar />
     </div>
     <div id="store-main-content" class="col-lg">
         @if (Model.Books != null)
@@ -33,7 +33,10 @@
                     </div>
                 }
             </div>
-            <div class="px-3 py-2 bg-light" page-model="@Model.Pagination" page-action="ShowBooks"></div>
+            <div class="px-3 py-2 bg-light" 
+                 page-model="@Model.Pagination" 
+                 page-action="ShowBooks" 
+                 page-url-category="@Model.Pagination.CurrentPage"></div>
         }
     </div>
 </div>

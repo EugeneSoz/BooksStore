@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using BooksStore.App.Contracts.Query;
 using BooksStore.Domain.Contracts.Repositories;
-using OnlineBooksStore.App.Contracts.Query;
 using OnlineBooksStore.App.Handlers.Interfaces;
 using OnlineBooksStore.App.Handlers.Mapping;
 using OnlineBooksStore.Domain.Contracts.Models.Orders;

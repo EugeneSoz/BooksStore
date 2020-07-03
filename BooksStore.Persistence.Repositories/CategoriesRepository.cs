@@ -99,21 +99,24 @@ namespace BooksStore.Persistence.Repositories
                                   ORDER BY P.Name, C.Name";
             using (var connection = _connectionProvider.OpenConnection())
             {
-                var categoryDictionary = new Dictionary<long, CategoryEntity>();
+                var categoriesDictionary = new Dictionary<long, CategoryEntity>();
                 var result = connection.Query<CategoryEntity, CategoryEntity, CategoryEntity>(
                     sql,
                     (parent, child) =>
                     {
-                        if (!categoryDictionary.TryGetValue(parent.Id, out var categoryEntry))
+                        if (categoriesDictionary.TryGetValue(parent.Id, out var existingEntity))
                         {
-                            categoryEntry = parent;
-                            categoryEntry.ChildrenCategories = new List<CategoryEntity>();
-                            categoryDictionary.Add(categoryEntry.Id, categoryEntry);
+                            existingEntity.ChildrenCategories.Add(child);
                         }
-                        categoryEntry.ChildrenCategories.Add(child);
+                        else
+                        {
+                            existingEntity = parent;
+                            existingEntity.ChildrenCategories = new List<CategoryEntity>();
+                            categoriesDictionary.Add(existingEntity.Id, existingEntity);
+                        }
 
-                        return categoryEntry;
-                    }, splitOn: nameof(CategoryEntity.Id)).ToList();
+                        return existingEntity;
+                    }, splitOn: nameof(CategoryEntity.Id)).Distinct().ToList();
 
                 return result;
             }
