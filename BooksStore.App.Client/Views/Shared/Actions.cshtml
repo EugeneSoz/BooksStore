@@ -1,0 +1,27 @@
+﻿@model ToolbarViewModel
+
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="gridSize" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @Model.GridSizeProperties[0].Name
+            </a>
+            <div class="dropdown-menu" aria-labelledby="gridSize">
+                @foreach (var listItem in Model.GridSizeProperties)
+                {
+                    <a class="dropdown-item" href="#">@listItem.Name</a>
+                }
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="sorting" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @Model.SortingProperties[0].Name
+            </a>
+            <div class="dropdown-menu" aria-labelledby="sorting">
+                @foreach (var listItem in Model.SortingProperties)
+                {
+                    <a class="dropdown-item" href="#">@listItem.Name</a>
+                }
+            </div>
+        </li>
+    </ul>
+

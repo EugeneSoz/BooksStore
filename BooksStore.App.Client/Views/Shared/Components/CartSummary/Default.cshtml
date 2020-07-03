@@ -1,0 +1,17 @@
+﻿@model CartViewModel
+
+@if (Model.Lines == null)
+{
+    <small class="text-white">
+        (Корзина: пусто)
+    </small>
+}
+else
+{
+    <small class="text-white">
+        Корзина: @(Model.Lines.Sum(cl => cl.Quantity)) книг(и) на @Model.TotalLineSum р.
+    </small>
+    <a asp-controller="Cart" asp-action="AddToCart" asp-route-returnurl="@Model.ReturnUrl" class="text-white btn btn-sm ml-1">
+        <i class="fa fa-shopping-cart fa-lg"></i>
+    </a>
+}

@@ -9,7 +9,9 @@ using OnlineBooksStore.App.Handlers.Interfaces;
 
 namespace BooksStore.App.Handlers.Command
 {
-    public class CartCommandHandler : ICommandHandler<CartCommand, List<CartLine>>
+    public class CartCommandHandler : 
+        ICommandHandler<AddToCartCommand, List<CartLine>>,
+        ICommandHandler<DeleteFromCartCommand, List<CartLine>>
     {
         private readonly IBooksRepository _booksRepository;
         private readonly ICartService _cartService;
@@ -20,12 +22,29 @@ namespace BooksStore.App.Handlers.Command
             _cartService = cartService ?? throw new ArgumentNullException(nameof(cartService));
         }
 
-        public List<CartLine> Handle(CartCommand command)
+        public List<CartLine> Handle(AddToCartCommand command)
         {
             var bookEntity = _booksRepository.GetBook(command.BookId);
-            var book = bookEntity.MapBookResponse();
             _cartService.Lines = command.Lines;
-            _cartService.AddItem(book, 1);
+            if (bookEntity != null)
+            {
+                var book = bookEntity.MapBookResponse();
+                _cartService.AddItem(book, 1);
+            }
+
+            return _cartService.Lines;
+        }
+
+        public List<CartLine> Handle(DeleteFromCartCommand command)
+        {
+            var bookEntity = _booksRepository.GetBook(command.BookId);
+            _cartService.Lines = command.Lines;
+
+            if (bookEntity != null)
+            {
+                var book = bookEntity.MapBookResponse();
+                _cartService.RemoveLine(book.Id);
+            }
 
             return _cartService.Lines;
         }

@@ -8,5 +8,6 @@ namespace BooksStore.Domain.Contracts.ViewModels
     {
         public Dictionary<int, List<BookResponse>> Books { get; set; }
         public Pagination Pagination { get; set; }
+        public ToolbarViewModel ToolbarViewModel { get; set; }
     }
 }

@@ -32,14 +32,27 @@ namespace BooksStore.App.Client.Controllers
         }
 
         [HttpPost]
-        public RedirectToActionResult AddToCart(long id, string returnUrl)
+        public RedirectResult AddToCart(long id, string returnUrl)
         {
             var lines = HttpContext.Session.GetJson<List<CartLine>>("cart") ?? new List<CartLine>();
-            var command = new CartCommand {BookId = id, Lines = lines};
+            var command = new AddToCartCommand {BookId = id, Lines = lines};
             var newLines = _cartCommandHandler.Handle(command);
 
             HttpContext.Session.SetJson("cart", newLines);
-            return RedirectToAction("ShowBooks", "Store", new { returnUrl });
+
+            return Redirect(returnUrl);
+            //return RedirectToAction("ShowBooks", "Store", new { returnUrl });
+        }
+
+        [HttpPost]
+        public RedirectToActionResult RemoveFromCart(long bookId, string returnUrl)
+        {
+            var lines = HttpContext.Session.GetJson<List<CartLine>>("cart") ?? new List<CartLine>();
+            var command = new DeleteFromCartCommand() {BookId = bookId, Lines = lines};
+            var newLines = _cartCommandHandler.Handle(command);
+
+            HttpContext.Session.SetJson("cart", newLines);
+            return RedirectToAction("AddToCart", "Cart", new { returnUrl });
         }
     }
 }

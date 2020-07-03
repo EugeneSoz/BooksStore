@@ -9,7 +9,7 @@
         <vc:store-sidebar />
     </div>
     <div id="store-main-content" class="col-lg">
-        <partial name="EmptyStoreToolbar" />
+        <partial name="StoreToolbar" model="Model.ToolbarViewModel" />
         @if (Model.Books != null)
         {
             <div id="store-scrollable-content" class="pl-3">

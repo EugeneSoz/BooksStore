@@ -1,4 +1,4 @@
-﻿namespace OnlineBooksStore.Domain.Contracts.Models
+﻿namespace BooksStore.Domain.Contracts.Models
 {
     public class ListItem
     {

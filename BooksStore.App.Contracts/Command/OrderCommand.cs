@@ -1,11 +1,10 @@
-﻿using OnlineBooksStore.Domain.Contracts.Models.Orders;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using BooksStore.Domain.Contracts.Models.Orders;
 
 namespace BooksStore.App.Contracts.Command
 {
-    public abstract class OrderCommand : BooksStore.App.Contracts.Command.Command
+    public abstract class OrderCommand : Command
     {
         [Required]
         public string Name { get; set; }

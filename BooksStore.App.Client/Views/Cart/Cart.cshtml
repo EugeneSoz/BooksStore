@@ -46,9 +46,15 @@
                                 @(line.Quantity * line.Price)
                             </td>
                             <td class="text-center" style="width: 5em">
-                                <button class="btn btn-sm btn-danger">
-                                    Удалить
-                                </button>
+                                <form asp-action="RemoveFromCart" method="post">
+                                    <input type="hidden" name="BookId"
+                                           value="@line.BookId" />
+                                    <input type="hidden" name="returnUrl"
+                                           value="@Model.ReturnUrl" />
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        Удалить
+                                    </button>
+                                </form>
                             </td>
                         </tr>
 

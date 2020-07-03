@@ -19,11 +19,14 @@ namespace BooksStore.App.Handlers.Query
     {
         private readonly IBooksRepository _booksRepository;
         private readonly IPagedListService<BookResponse> _pagedListService;
+        private readonly IPropertiesService _propertiesService;
 
-        public BookQueryHandler(IBooksRepository booksRepository, IPagedListService<BookResponse> pagedListService)
+        public BookQueryHandler(IBooksRepository booksRepository, 
+            IPagedListService<BookResponse> pagedListService, IPropertiesService propertiesService)
         {
             _booksRepository = booksRepository ?? throw new ArgumentNullException(nameof(booksRepository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
+            _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
         }
 
         public BooksViewModel Handle(StorePageFilterQuery query)
@@ -36,7 +39,12 @@ namespace BooksStore.App.Handlers.Query
             var result = new BooksViewModel
             {
                 Books = booksGrid,
-                Pagination = response?.Pagination
+                Pagination = response?.Pagination,
+                ToolbarViewModel = new ToolbarViewModel
+                {
+                    SortingProperties = _propertiesService.GetGridSizeProperties(),
+                    GridSizeProperties = _propertiesService.GetSortingProperties()
+                }
             };
 
             return result;

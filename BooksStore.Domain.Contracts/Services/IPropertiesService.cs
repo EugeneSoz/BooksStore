@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using BooksStore.Domain.Contracts.Models;
 using OnlineBooksStore.Domain.Contracts.Models;
 
-namespace OnlineBooksStore.Domain.Contracts.Services
+namespace BooksStore.Domain.Contracts.Services
 {
     public interface IPropertiesService
     {
