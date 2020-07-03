@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BooksStore.App.Contracts.Command;
+using BooksStore.Domain.Contracts.Models.Orders;
 using BooksStore.Persistence.Entities;
 using OnlineBooksStore.Domain.Contracts.Models.Orders;
 
@@ -10,13 +11,13 @@ namespace OnlineBooksStore.App.Handlers.Mapping
     {
         public static Order MapOrderResponse(this OrderEntity entity)
         {
-            var lines = new List<OrderLine>();
+            var lines = new List<CartLine>();
             entity.Lines.ToList().ForEach(l =>
             {
-                lines.Add(new OrderLine
+                lines.Add(new CartLine
                 {
                     Id = l.Id,
-                    EntityId = l.EntityId,
+                    BookId = l.EntityId,
                     ItemName = l.ItemName,
                     Quantity = l.Quantity,
                     Price = l.Price
@@ -52,7 +53,7 @@ namespace OnlineBooksStore.App.Handlers.Mapping
                 {
                     Id = l.Id,
                     ItemName = l.ItemName,
-                    EntityId = l.EntityId,
+                    EntityId = l.BookId,
                     Quantity = l.Quantity,
                     Price = l.Price
                 });

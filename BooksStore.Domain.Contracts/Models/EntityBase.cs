@@ -1,4 +1,4 @@
-﻿namespace OnlineBooksStore.Domain.Contracts.Models
+﻿namespace BooksStore.Domain.Contracts.Models
 {
     /// <summary>
     /// Base entity class with the identifier

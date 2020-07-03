@@ -10,6 +10,7 @@ namespace BooksStore.App.Client.Infrastructure
         internal static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddTransient<IPagedListService<BookResponse>, PagedListService<BookResponse>>();
+            services.AddTransient<ICartService, CartService>();
 
             return services;
         }

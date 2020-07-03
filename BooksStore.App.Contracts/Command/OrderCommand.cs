@@ -1,6 +1,7 @@
 ﻿using OnlineBooksStore.Domain.Contracts.Models.Orders;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BooksStore.Domain.Contracts.Models.Orders;
 
 namespace BooksStore.App.Contracts.Command
 {
@@ -13,7 +14,7 @@ namespace BooksStore.App.Contracts.Command
         [Required]
         public bool Shipped { get; set; }
         [Required]
-        public IEnumerable<OrderLine> Lines { get; set; }
+        public IEnumerable<CartLine> Lines { get; set; }
     }
 
     public sealed class CreateOrderCommand : OrderCommand { }

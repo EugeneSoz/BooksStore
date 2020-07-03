@@ -1,4 +1,6 @@
-﻿namespace OnlineBooksStore.Domain.Contracts.Models.Publishers
+﻿using BooksStore.Domain.Contracts.Models;
+
+namespace OnlineBooksStore.Domain.Contracts.Models.Publishers
 {
     /// <summary>
     /// Represents a book publisher

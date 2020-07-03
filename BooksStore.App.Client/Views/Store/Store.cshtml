@@ -9,6 +9,7 @@
         <vc:store-sidebar />
     </div>
     <div id="store-main-content" class="col-lg">
+        <partial name="EmptyStoreToolbar" />
         @if (Model.Books != null)
         {
             <div id="store-scrollable-content" class="pl-3">
@@ -20,7 +21,7 @@
                             @if (book != null)
                             {
                                 <div class="col">
-                                    <partial name="BookCard" model="book" />
+                                    <partial name="BookCard" model="book"/>
                                 </div>
                             }
                             else
@@ -33,9 +34,9 @@
                     </div>
                 }
             </div>
-            <div class="px-3 py-2 bg-light" 
-                 page-model="@Model.Pagination" 
-                 page-action="ShowBooks" 
+            <div class="px-3 py-2 bg-light"
+                 page-model="@Model.Pagination"
+                 page-action="ShowBooks"
                  page-url-category="@Model.Pagination.CurrentPage"></div>
         }
     </div>

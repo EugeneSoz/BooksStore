@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Books;
 
 namespace OnlineBooksStore.Domain.Contracts.Models.Categories

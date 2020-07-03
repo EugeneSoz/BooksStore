@@ -32,5 +32,14 @@ namespace BooksStore.App.Client.Controllers
             
             return View("Store", result);
         }
+
+        [HttpGet]
+        public IActionResult ShowDetails(long bookId)
+        {
+            var query = new BookIdQuery { Id = bookId };
+            var result = _bookQueryHandler.Handle(query);
+
+            return View("StoreBookDetails", result);
+        }
     }
 }

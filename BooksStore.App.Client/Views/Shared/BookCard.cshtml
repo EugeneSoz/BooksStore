@@ -1,9 +1,8 @@
-﻿@using OnlineBooksStore.Domain.Contracts.Models
-@model BookResponse
+﻿@model BookResponse
 
 @if (Model != null)
 {
-    <div class="card shadow mb-4" style="width: 15rem;">
+    <div class="card shadow mb-4" style="width: 16rem;">
         <img class="card-img-top" src="" alt="Обложка книги" height="370">
         <div class="card-body" style="height: 12rem;">
             <h4 class="card-title text-primary">@Model.RetailPrice.ToString("C")</h4>
@@ -12,12 +11,23 @@
             <p class="card-text text-warning">В наличии</p>
         </div>
         <div class="card-footer">
-            <button type="button" class="btn btn-success">
-                В корзину
-            </button>
-            <a href="@AppNavLink.Details" class="btn btn-primary ml-2">
-                О книге
-            </a>
+            <form id="@Model.Id" asp-action="AddToCart" asp-controller="Cart" method="post">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" name="returnUrl"
+                       value="@ViewContext.HttpContext.Request.PathAndQuery()" />
+                <div class="row no-gutters">
+                    <div class="col-lg-6">
+                        <button type="submit" class="btn btn-success">
+                            В корзину
+                        </button>
+                    </div>
+                    <div class="col-lg-6">
+                        <a asp-action="ShowDetails" asp-controller="Store" asp-route-bookId="@Model.Id" class="btn btn-primary ml-2">
+                            О книге
+                        </a>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 }

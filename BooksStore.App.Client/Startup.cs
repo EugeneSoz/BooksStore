@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BooksStore.App.Client.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace BooksStore.App.Client
 {
@@ -27,6 +21,8 @@ namespace BooksStore.App.Client
             services.AddRepositories(_configuration);
             services.AddCommandsAndQueries();
             services.AddServices();
+            services.AddDistributedMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,7 +31,7 @@ namespace BooksStore.App.Client
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
-
+            app.UseSession();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -47,6 +43,9 @@ namespace BooksStore.App.Client
                 endpoints.MapControllerRoute("category", "{category}",
                     new { Controller = "Store", action = "ShowBooks", page = 1 });
 
+                endpoints.MapControllerRoute("storeBookDetails",
+                    "Books/Details/{bookId:long}",
+                    new { Controller = "Store", action = "ShowDetails" });
                 endpoints.MapControllerRoute("pagination",
                     "Books/Page{page}",
                     new { Controller = "Store", action = "ShowBooks" });
