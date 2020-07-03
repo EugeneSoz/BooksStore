@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Mapping;
+using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Persistence.Entities;

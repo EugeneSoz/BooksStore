@@ -6,7 +6,7 @@
     <div class="card shadow mb-4" style="width: 15rem;">
         <img class="card-img-top" src="" alt="Обложка книги" height="370">
         <div class="card-body" style="height: 12rem;">
-            <h4 class="card-title text-primary">@Model.RetailPrice</h4>
+            <h4 class="card-title text-primary">@Model.RetailPrice.ToString("C")</h4>
             <h6 class="card-subtitle mb-2">@Model.Title</h6>
             <h6 class="card-text">@Model.Authors</h6>
             <p class="card-text text-warning">В наличии</p>

@@ -2,6 +2,7 @@
 using System.Linq;
 using BooksStore.App.Contracts.Command;
 using BooksStore.Domain.Contracts.Models.Books;
+using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Persistence.Entities;
 using OnlineBooksStore.Domain.Contracts.Models.Categories;

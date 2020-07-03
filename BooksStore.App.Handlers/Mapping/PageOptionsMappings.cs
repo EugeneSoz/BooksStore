@@ -16,7 +16,7 @@ namespace BooksStore.App.Handlers.Mapping
                 FilterPropertyValue = query.FilterPropertyValue,
                 SearchPropertyNames = query.SearchPropertyNames,
                 SearchTerm = query.SearchTerm,
-                SortPropertyName = query.SortPropertyName
+                SortPropertyName = query.SortPropertyName,
             };
         }
     }

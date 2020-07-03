@@ -2,6 +2,8 @@
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Query;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace BooksStore.App.Client.Controllers
 {
@@ -14,15 +16,16 @@ namespace BooksStore.App.Client.Controllers
             _bookQueryHandler = bookQueryHandler ?? throw new ArgumentNullException(nameof(bookQueryHandler));
         }
 
-        public IActionResult ShowBooks()
+        [HttpGet]
+        public IActionResult ShowBooks(int page)
         {
-            var query = new StorePageFilterQuery()
+            var query1 = new StorePageFilterQuery()
             {
-                CurrentPage = 1,
-                PageSize = 20
+                CurrentPage = page == 0 ? 1 : page,
+                PageSize = 20,
             };
 
-            var result = _bookQueryHandler.Handle(query);
+            var result = _bookQueryHandler.Handle(query1);
             
             return View("Store", result);
         }

@@ -39,6 +39,9 @@ namespace BooksStore.App.Client
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute("pagination",
+                    "Books/Page{page}",
+                    new { Controller = "Store", action = "ShowBooks" });
                 endpoints.MapControllerRoute(
                     name: "defalult",
                     pattern: "{controller=Store}/{action=ShowBooks}");

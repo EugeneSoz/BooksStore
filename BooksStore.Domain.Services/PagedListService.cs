@@ -61,7 +61,7 @@ namespace BooksStore.Domain.Services
                 }
             };
 
-            pagedList.Pagination.PageNumbers =
+            pagedList.Pagination.Pages =
                 CreatePageNumbers(pagedList.Pagination.LeftBoundary, pagedList.Pagination.RightBoundary);
 
             return pagedList;
@@ -79,7 +79,7 @@ namespace BooksStore.Domain.Services
                     TotalPages = 1,
                     LeftBoundary = 1,
                     RightBoundary = 1,
-                    PageNumbers = new List<int> {1}
+                    Pages = new List<int> {1}
                 }
             };
         }

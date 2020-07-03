@@ -59,6 +59,6 @@ namespace BooksStore.Domain.Contracts.Models.Pages
         /// <value>
         /// The page numbers.
         /// </value>
-        public List<int> PageNumbers { get; set; }
+        public List<int> Pages { get; set; }
     }
 }
