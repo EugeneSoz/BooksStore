@@ -7,6 +7,6 @@ namespace BooksStore.Domain.Contracts.Repositories
     public interface IOrdersRepository
     {
         (int, List<OrderEntity>) GetOrders(PageOptions options);
-        OrderEntity AddOrder(OrderEntity order);
+        bool AddOrder(OrderEntity order, CustomerEntity customer, PaymentEntity payment, List<CartLineEntity> lines);
     }
 }

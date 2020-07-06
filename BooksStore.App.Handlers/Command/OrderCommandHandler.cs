@@ -13,7 +13,7 @@ namespace BooksStore.App.Handlers.Command
     public class OrderCommandHandler : 
         ICommandHandler<CreateCustomerCommand, Customer>,
         ICommandHandler<CreatePaymentCommand, Payment>,
-        ICommandHandler<CreateOrderCommand, OrderEntity>
+        ICommandHandler<CreateOrderCommand, bool>
     {
         private readonly IBooksRepository _booksRepository;
         private readonly IOrdersRepository _ordersRepository;
@@ -38,10 +38,10 @@ namespace BooksStore.App.Handlers.Command
             return payment;
         }
 
-        public OrderEntity Handle(CreateOrderCommand command)
+        public bool Handle(CreateOrderCommand command)
         {
             var order = command.MapToOrder();
-            var result = _ordersRepository.AddOrder(new OrderEntity());
+            var result = false;// _ordersRepository.AddOrder(new OrderEntity());
 
             return result;
         }

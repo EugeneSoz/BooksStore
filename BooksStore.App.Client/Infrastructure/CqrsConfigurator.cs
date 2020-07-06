@@ -12,6 +12,7 @@ namespace BooksStore.App.Client.Infrastructure
             services.AddTransient<CategoryQueryHandler>();
             services.AddTransient<PublisherQueryHandler>();
             services.AddTransient<CartQueryHandler>();
+            services.AddTransient<OrderQueryHandler>();
 
             services.AddTransient<BookCommandHandler>();
             services.AddTransient<CategoryCommandHandler>();

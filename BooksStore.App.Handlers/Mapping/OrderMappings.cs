@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BooksStore.App.Contracts.Command;
+﻿using BooksStore.App.Contracts.Command;
+using BooksStore.App.Contracts.Query;
 using BooksStore.Domain.Contracts.Models.Orders;
-using BooksStore.Persistence.Entities;
 
 namespace BooksStore.App.Handlers.Mapping
 {
@@ -15,6 +13,16 @@ namespace BooksStore.App.Handlers.Mapping
                 Lines = command.Lines,
                 Customer = command.Customer,
                 Payment = command.Payment
+            };
+        }
+
+        public static Order MapToOrder(this OrderQuery query)
+        {
+            return new Order
+            {
+                Lines = query.Lines,
+                Customer = query.Customer,
+                Payment = query.Payment
             };
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
@@ -39,7 +40,7 @@ namespace BooksStore.Persistence.Repositories
             }
         }
 
-        public OrderEntity AddOrder(OrderEntity order)
+        public bool AddOrder(OrderEntity order, CustomerEntity customer, PaymentEntity payment, List<CartLineEntity> lines)
         {
             const string sql = @"INSERT INTO Orders (Shipped, CustomerId, PaymentId)
                                  VALUES @shipped, @customerId, @paymentId";
@@ -48,11 +49,81 @@ namespace BooksStore.Persistence.Repositories
             parameters.Add("@customerId", order.CustomerId, DbType.Int64, ParameterDirection.Input);
             parameters.Add("@paymentId", order.PaymentId, DbType.Int64, ParameterDirection.Input);
             using (var connection = _connectionProvider.OpenConnection())
+            using (var transaction = connection.BeginTransaction())
             {
-                var affectedRows = connection.Execute(sql, parameters);
+                var customerId = AddCustomer(connection, transaction, customer);
+                var paymentId = AddPayment(connection, transaction, payment);
+                var orderId = 0L;
+                var linesId = 0L;
+                if (customerId != 0 && paymentId != 0)
+                {
+                    order.CustomerId = customerId;
+                    order.PaymentId = paymentId;
+                    orderId = connection.QuerySingle<long>(sql, parameters, transaction);
+                }
 
-                return affectedRows > 0 ? new OrderEntity() : null;
+                if (orderId != 0)
+                {
+                    linesId = AddCartLine(connection, transaction, lines);
+                }
+
+                if (linesId > 0)
+                {
+                    transaction.Commit();
+                    return true;
+                }
+
+                transaction.Rollback();
+                return false;
             }
+        }
+
+        private long AddCustomer(IDbConnection connection, IDbTransaction transaction, CustomerEntity customer)
+        {
+            const string sql = @"INSERT INTO Customers (Name, Address, State, ZipCode, Created)
+                                OUTPUT inserted.Id
+                                VALUES @name, @address, @state, @zipCode, @created";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@name", customer.Name, DbType.String, ParameterDirection.Input);
+            parameters.Add("@address", customer.Address, DbType.String, ParameterDirection.Input);
+            parameters.Add("@state", customer.State, DbType.String, ParameterDirection.Input);
+            parameters.Add("@zipCode", customer.ZipCode, DbType.Int32, ParameterDirection.Input);
+            parameters.Add("@created", DateTime.Today, DbType.DateTime, ParameterDirection.Input);
+
+            var id = connection.QuerySingle<long>(sql, parameters, transaction);
+
+            return id;
+        }
+
+        private long AddPayment(IDbConnection connection, IDbTransaction transaction, PaymentEntity payment)
+        {
+            const string sql = @"INSERT INTO Customers (Name, Address, State, ZipCode, Created)
+                                OUTPUT inserted.Id
+                                VALUES @name, @address, @state, @zipCode, @created";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@name", payment.AuthCode, DbType.String, ParameterDirection.Input);
+            parameters.Add("@address", payment.CardExpiry, DbType.String, ParameterDirection.Input);
+            parameters.Add("@created", DateTime.Today, DbType.DateTime, ParameterDirection.Input);
+
+            var id = connection.QuerySingle<long>(sql, parameters, transaction);
+
+            return id;
+        }
+
+        private long AddCartLine(IDbConnection connection, IDbTransaction transaction, List<CartLineEntity> lines)
+        {
+            const string sql = @"INSERT INTO Customers (Name, Address, State, ZipCode, Created)
+                                OUTPUT inserted.Id
+                                VALUES @name, @address, @state, @zipCode, @created";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@created", DateTime.Today, DbType.DateTime, ParameterDirection.Input);
+
+            var id = connection.QuerySingle<long>(sql, parameters, transaction);
+
+            return id;
         }
     }
 }
