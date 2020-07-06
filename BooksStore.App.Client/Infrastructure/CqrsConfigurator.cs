@@ -1,7 +1,6 @@
 ﻿using BooksStore.App.Handlers.Command;
 using BooksStore.App.Handlers.Query;
 using Microsoft.Extensions.DependencyInjection;
-using OnlineBooksStore.App.Handlers.Command;
 
 namespace BooksStore.App.Client.Infrastructure
 {
@@ -18,6 +17,7 @@ namespace BooksStore.App.Client.Infrastructure
             services.AddTransient<CategoryCommandHandler>();
             services.AddTransient<PublisherCommandHandler>();
             services.AddTransient<CartCommandHandler>();
+            services.AddTransient<OrderCommandHandler>();
 
             return services;
         }

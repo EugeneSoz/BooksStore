@@ -52,7 +52,7 @@ namespace BooksStore.Persistence.Repositories
             }
         }
 
-        public IEnumerable<BookEntity> GetSomeBooks(IEnumerable<long> booksIds)
+        public IEnumerable<BookEntity> GetBooksByIds(IEnumerable<long> booksIds)
         {
             const string sql = @"SELECT *
                                    FROM Books

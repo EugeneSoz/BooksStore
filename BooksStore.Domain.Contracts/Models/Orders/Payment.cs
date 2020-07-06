@@ -1,6 +1,4 @@
-﻿using BooksStore.Domain.Contracts.Models;
-
-namespace OnlineBooksStore.Domain.Contracts.Models.Orders
+﻿namespace BooksStore.Domain.Contracts.Models.Orders
 {
     public class Payment : EntityBase
     {

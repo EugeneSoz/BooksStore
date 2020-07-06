@@ -1,0 +1,51 @@
+﻿@model Order
+
+@{
+    Layout = "_StoreLayout";
+}
+
+<div id="store-content">
+    <partial name="EmptyStoreToolbar" />
+    <div id="store-scrollable-content">
+        <div class="card m-2">
+            <div class="card-body">
+                <h2 class="text-center">Детали заказа</h2>
+
+                <table class="table m-2">
+                    <tr>
+                        <th>Ваше имя</th>
+                        <td>@Model.Customer.Name</td>
+                    </tr>
+                    <tr>
+                        <th>Адрес доставки</th>
+                        <td>@Model.Customer.Address</td>
+                    </tr>
+                    <tr>
+                        <th>Заказываемые товары</th>
+                        <td>@Model.Lines.Sum(l => l.Quantity)</td>
+                    </tr>
+                    <tr>
+                        <th>Общая стоимость</th>
+                        <td>@Model.Lines.Sum(l => l.Quantity * l.Price)</td>
+                    </tr>
+                </table>
+
+                <form asp-action="ShowCheckoutSummary" class="mt-2" method="post">
+                    <input type="hidden" value="1" />
+                    <a asp-controller="Order" asp-action="ShowCheckoutPayment" class="btn btn-outline-primary">
+                        Назад
+                    </a>
+                    <button type="submit" class="btn btn-success ml-2">
+                        Разместить заказ
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

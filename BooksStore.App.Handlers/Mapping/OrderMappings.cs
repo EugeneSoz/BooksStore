@@ -3,69 +3,18 @@ using System.Linq;
 using BooksStore.App.Contracts.Command;
 using BooksStore.Domain.Contracts.Models.Orders;
 using BooksStore.Persistence.Entities;
-using OnlineBooksStore.Domain.Contracts.Models.Orders;
 
-namespace OnlineBooksStore.App.Handlers.Mapping
+namespace BooksStore.App.Handlers.Mapping
 {
     public static class OrderMappings
     {
-        public static Order MapOrderResponse(this OrderEntity entity)
+        public static Order MapToOrder(this CreateOrderCommand command)
         {
-            var lines = new List<CartLine>();
-            entity.Lines.ToList().ForEach(l =>
-            {
-                lines.Add(new CartLine
-                {
-                    Id = l.Id,
-                    BookId = l.EntityId,
-                    ItemName = l.ItemName,
-                    Quantity = l.Quantity,
-                    Price = l.Price
-                });
-            });
             return new Order
             {
-                Id = entity.Id,
-                Address = entity.Address,
-                State = entity.State,
-                ZipCode = entity.ZipCode,
-                Shipped = entity.Shipped,
-                Paynent = new Payment
-                {
-                    Id = entity.PaynentId,
-                    AuthCode = entity.Payment.AuthCode,
-                    CardExpiry = entity.Payment.CardExpiry,
-                    CardNumber = entity.Payment.CardNumber,
-                    CardSecurityCode = entity.Payment.CardSecurityCode,
-                    Total = entity.Payment.Total
-                },
-                CustomerName = entity.CustomerName,
-                Lines = lines.AsEnumerable()
-            };
-        }
-
-        public static OrderEntity MapOrderEntity<TCommand>(this TCommand command) where TCommand : OrderCommand
-        {
-            var lines = new List<OrderLineEntity>();
-            command.Lines.ToList().ForEach(l =>
-            {
-                lines.Add(new OrderLineEntity
-                {
-                    Id = l.Id,
-                    ItemName = l.ItemName,
-                    EntityId = l.BookId,
-                    Quantity = l.Quantity,
-                    Price = l.Price
-                });
-            });
-            return new OrderEntity
-            {
-                Id = command.Id,
-                Address = command.Address,
-                Shipped = command.Shipped,
-                Payment = new PaymentEntity(),
-                CustomerName = command.Name,
-                Lines = lines.AsEnumerable()
+                Lines = command.Lines,
+                Customer = command.Customer,
+                Payment = command.Payment
             };
         }
     }

@@ -8,7 +8,7 @@ namespace BooksStore.Domain.Contracts.Repositories
     public interface IBooksRepository
     {
         (int count, List<BookEntity> books) GetBooks(PageOptions options);
-        IEnumerable<BookEntity> GetSomeBooks(IEnumerable<long> booksIds);
+        IEnumerable<BookEntity> GetBooksByIds(IEnumerable<long> booksIds);
         BookEntity GetBook(long key);
         BookEntity AddBook(BookEntity book);
         bool UpdateBook(BookEntity book);

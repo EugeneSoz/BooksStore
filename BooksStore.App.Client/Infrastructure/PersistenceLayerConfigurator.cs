@@ -15,6 +15,7 @@ namespace BooksStore.App.Client.Infrastructure
             services.AddTransient<IBooksRepository, BooksRepository>();
             services.AddTransient<ICategoriesRepository, CategoriesRepository>();
             services.AddTransient<IPublishersRepository, PublishersRepository>();
+            services.AddTransient<IOrdersRepository, OrdersRepository>();
 
             return services;
         }

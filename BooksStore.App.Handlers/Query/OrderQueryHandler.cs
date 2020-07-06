@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using BooksStore.App.Contracts.Query;
+using BooksStore.App.Handlers.Mapping;
+using BooksStore.Domain.Contracts.Models.Orders;
 using BooksStore.Domain.Contracts.Repositories;
 using OnlineBooksStore.App.Handlers.Interfaces;
 using OnlineBooksStore.App.Handlers.Mapping;
-using OnlineBooksStore.Domain.Contracts.Models.Orders;
 
 namespace BooksStore.App.Handlers.Query
 {
@@ -22,21 +23,14 @@ namespace BooksStore.App.Handlers.Query
 
         public IEnumerable<Order> Handle(OrderQuery query)
         {
-            var orderEntities = _ordersRepository.GetOrders();
-            var orders = orderEntities.Select(oe => oe.MapOrderResponse());
+            //var orderEntities = _ordersRepository.GetOrders();
+            IEnumerable<Order> orders = null;//orderEntities.Select(oe => oe.MapOrderResponse());
 
             return orders;
         }
 
         public bool Handle(OrderIdQuery query)
         {
-            var orderEntity = _ordersRepository.GetOrder(query.Id);
-            if (orderEntity != null)
-            {
-                orderEntity.Shipped = true;
-                return _ordersRepository.UpdateOrder(orderEntity);
-            }
-
             return false;
         }
     }

@@ -1,0 +1,38 @@
+﻿@model Order
+
+@{
+    Layout = "_StoreLayout";
+}
+
+    <div id="store-content">
+        <EmptyStoreToolbarComponent />
+        <div id="store-scrollable-content">
+            <div class="card m-2">
+                <div class="card-body">
+                    <h2 class="text-center">Подтверждение заказа</h2>
+
+                    <table *ngIf="orderHasBeenPlaced" class="table m-2">
+                        <tr>
+                            <th>Заказ</th>
+                            <td>{{orderConfirmation.orderId}}</td>
+                        </tr>
+                        <tr>
+                            <th>Цена</th>
+                            <td>{{orderConfirmation.amount | currency:"RUB":"symbol":"2.2-2"}}</td>
+                        </tr>
+                        <tr>
+                            <th>Код платежа</th>
+                            <td>{{orderConfirmation.authCode}}</td>
+                        </tr>
+                    </table>
+
+                    <h3 class="text-center">Заказ подтверждается...</h3>
+
+                    <div class="text-center">
+                        <a href="@AppNavLink.Store" class="btn btn-primary">В магазин</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>

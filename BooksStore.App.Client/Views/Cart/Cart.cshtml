@@ -74,7 +74,7 @@
 
             <div class="text-center">
                 <a href="@Model.ReturnUrl" class="btn btn-primary">Продолжить покупки</a>
-                <a href="@AppNavLink.Confirmation" class="btn btn-secondary ml-2">
+                <a asp-controller="Order" asp-action="ShowCheckoutDetails" class="btn btn-secondary ml-2">
                     Оплатить заказ
                 </a>
             </div>
