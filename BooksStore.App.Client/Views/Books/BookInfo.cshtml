@@ -1,0 +1,49 @@
+﻿@model BookResponse
+
+@{
+    Layout = "_AdminLayout";
+}
+
+@if (Model == null || Model.Id == 0)
+{
+    <h5>Информация о книге отсутствует</h5>
+}
+
+
+@if (Model != null && Model.Id > 0)
+{
+    <h3>@Model.Title</h3>
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>Автор(ы)</td>
+                <td>@Model.Authors</td>
+            </tr>
+            <tr>
+                <td>Количество страниц</td>
+                <td>@Model.PageCount</td>
+            </tr>
+            <tr>
+                <td>Год выпуска</td>
+                <td>@Model.Year</td>
+            </tr>
+            <tr>
+                <td>Категория</td>
+                <td>@Model.CategoryId</td>
+            </tr>
+
+            <tr>
+                <td>Издательство</td>
+                <td>@Model.PublisherId</td>
+            </tr>
+            <tr>
+                <td>Язык издания</td>
+                <td>@Model.Language</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-lg-5">
+        @Model.Description
+    </div>
+}

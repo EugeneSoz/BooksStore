@@ -1,0 +1,67 @@
+﻿@model TModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<AdminToolbarComponent IsButtonsVisible="false" />
+
+<div class="card m-2">
+    <div class="card-body">
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-create" role="tab" aria-controls="nav-create" aria-selected="true">Категория</a>
+                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Связанные книги</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-create" role="tabpanel" aria-labelledby="nav-create-tab">
+                <div class="bg-primary text-white p-2">
+                    <div class="d-flex flex-row justify-content-between">
+                        <h5>Создать категорию</h5>
+                        <a href="@AppNavLink.Categories" class="btn btn-primary">К списку категорий/подкатегорий</a>
+                    </div>
+                </div>
+                @if (_isAlertVisible)
+                {
+    <div class="alert alert-success mt-2" role="alert">
+        Создана запись в бд
+    </div>}
+                <form class="mt-3">
+                    <ServerValidationComponent />
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Родительская категория</label>
+                        <div class="col-sm-7">
+                            <select class="form-control">
+                                <option value="0">Без родительской категории</option>
+                                <option value="1">Category1</option>
+                            </select>
+                            <ValidationComponent />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Название категории</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" />
+                            <ValidationComponent />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-7">
+                            <button type="submit" class="btn btn-primary">
+                                Создать
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                <RelatedBooksComponent Books="@_category.Books" />
+            </div>
+        </div>
+    </div>
+</div>
