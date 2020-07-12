@@ -25,7 +25,7 @@ namespace BooksStore.App.Handlers.Query
 
         public PagedList<PublisherResponse> Handle(PageFilterQuery query)
         {
-            var options = query.MapQueryOptions();
+            var options = query.MapToPageOptions();
             var publisherEntities = _repository.GetPublishers(options);
 
             var publishersPagedList = publisherEntities.MapPublisherResponsePagedList();

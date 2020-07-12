@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Persistence.Entities;
@@ -18,7 +19,7 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int, List<OrderEntity>) GetOrders(PageOptions options)
+        public (int count, List<OrderEntity> orders) GetOrders(PageOptions options)
         {
             if (string.IsNullOrEmpty(options.SortPropertyName))
             {
@@ -29,14 +30,24 @@ namespace BooksStore.Persistence.Repositories
                                    FROM Orders";
 
             var queryProcessing = new QueryProcessing<PageOptions>(options);
-            var sql = $@"SELECT *
-                                FROM Orders {queryProcessing.GetQueryConditions()}";
+            var sql = $@"SELECT O.*, C.*, P.*
+                              FROM Orders AS O
+                                       INNER JOIN Customers AS C ON O.CustomerId = C.Id
+                                       INNER JOIN Payments AS P ON O.PaymentId = P.Id {queryProcessing.GetQueryConditions()}";
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
-                var orders = connection.Query<OrderEntity>(sql);
+                var orders = connection.Query<OrderEntity, CustomerEntity, PaymentEntity, OrderEntity>(
+                    sql,
+                    ((order, customer, payment) =>
+                    {
+                        order.CustomerEntity = customer;
+                        order.PaymentEntity = payment;
 
-                return (0, new List<OrderEntity>());
+                        return order;
+                    }), splitOn: nameof(BaseEntity.Id));
+
+                return (rowsCount, orders.ToList());
             }
         }
 

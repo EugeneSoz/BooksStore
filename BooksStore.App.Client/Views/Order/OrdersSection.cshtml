@@ -1,0 +1,34 @@
+﻿@model PagedList<Order>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+<table class="table table-sm table-striped table-bordered">
+    <thead>
+    <tr><th colspan="5" class="text-center">Заказы</th></tr>
+    </thead>
+    <tbody>
+    @if (Model.Entities?.Count() > 0) {
+@foreach (Order o in Model.Entities) {
+    <tr>
+        <td>@o.Customer.Name</td><td>@o.Customer.ZipCode</td><th>Product</th><th>Quantity</th>
+        <td>
+            <button class="btn btn-sm btn-danger">
+                    Удалить
+            </button>
+        </td>
+    </tr>
+@foreach (CartLine line in Model.Entities[0].Lines) {
+    <tr>
+        <td colspan="2"></td>
+        <td>@line.ItemName</td><td>@line.Quantity</td>
+        <td></td>
+    </tr>
+}
+}
+    } else {
+        <tr><td colspan="5" class="text-center">No Orders</td></tr>
+    }
+    </tbody>
+</table>

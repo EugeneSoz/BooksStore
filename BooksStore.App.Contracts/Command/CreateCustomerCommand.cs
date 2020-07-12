@@ -10,6 +10,6 @@ namespace BooksStore.App.Contracts.Command
         public string Address { get; set; }
         public string State { get; set; }
         [Required(ErrorMessage = "Укажите индекс адреса доставки")]
-        public string ZipCode { get; set; }
+        public int ZipCode { get; set; }
     }
 }

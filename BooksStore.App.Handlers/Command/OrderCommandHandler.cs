@@ -41,7 +41,7 @@ namespace BooksStore.App.Handlers.Command
         public bool Handle(CreateOrderCommand command)
         {
             var order = command.MapToOrder();
-            var result = false;// _ordersRepository.AddOrder(new OrderEntity());
+            var result = false;//_ordersRepository.AddOrder(command.Customer);
 
             return result;
         }

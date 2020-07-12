@@ -28,7 +28,7 @@ namespace BooksStore.App.Handlers.Query
 
         public PagedList<CategoryResponse> Handle(PageFilterQuery query)
         {
-            var options = query.MapQueryOptions();
+            var options = query.MapToPageOptions();
             var categoryEntities = _categoriesRepository.GetCategories(options);
 
             var categoriesPagedList = categoryEntities.MapCategoryResponsePagedList();

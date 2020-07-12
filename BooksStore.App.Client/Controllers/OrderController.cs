@@ -103,5 +103,18 @@ namespace BooksStore.App.Client.Controllers
         {
             return View("OrderConfirmation", new Order());
         }
+
+        [HttpGet]
+        public IActionResult ShowOrders()
+        {
+            var query = new PageFilterQuery
+            {
+                CurrentPage = 1,
+                PageSize = 20
+            };
+            var result = _orderQueryHandler.Handle(query);
+
+            return View("OrdersSection", result);
+        }
     }
 }

@@ -52,7 +52,7 @@ namespace BooksStore.App.Handlers.Query
 
         public PagedList<BookResponse> Handle(PageFilterQuery query)
         {
-            var options = query.MapQueryOptions();
+            var options = query.MapToPageOptions();
             var bookEntities = _booksRepository.GetBooks(options);
             var books = bookEntities.books
                 .Select(b => b.MapBookResponse())
