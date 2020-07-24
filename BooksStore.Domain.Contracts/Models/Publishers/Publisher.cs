@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using BooksStore.Domain.Contracts.Models.Books;
-using OnlineBooksStore.Domain.Contracts.Models.Publishers;
 
 namespace BooksStore.Domain.Contracts.Models.Publishers
 {

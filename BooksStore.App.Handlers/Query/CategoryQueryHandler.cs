@@ -6,34 +6,57 @@ using BooksStore.App.Handlers.Mapping;
 using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
+using BooksStore.Domain.Contracts.Services;
+using BooksStore.Domain.Contracts.ViewModels;
 using BooksStore.Persistence.Entities;
 using OnlineBooksStore.App.Handlers.Interfaces;
-using OnlineBooksStore.App.Handlers.Mapping;
-using OnlineBooksStore.Domain.Contracts.Models.Categories;
 
 namespace BooksStore.App.Handlers.Query
 {
-    public class CategoryQueryHandler : IQueryHandler<PageFilterQuery, PagedList<CategoryResponse>>,
+    public class CategoryQueryHandler : IQueryHandler<PageFilterQuery, CategoriesViewModel>,
         IQueryHandler<EntityIdQuery, Category>,
         IQueryHandler<CategoryQuery, List<Category>>,
         IQueryHandler<SearchTermQuery, List<CategoryResponse>>,
         IQueryHandler<StoreCategoryQuery, List<StoreCategoryResponse>>
     {
         private readonly ICategoriesRepository _categoriesRepository;
+        private readonly IPagedListService<CategoryResponse> _pagedListService;
+        private readonly IPropertiesService _propertiesService;
 
-        public CategoryQueryHandler(ICategoriesRepository categoriesRepository)
+        public CategoryQueryHandler(
+            ICategoriesRepository categoriesRepository, 
+            IPagedListService<CategoryResponse> pagedListService, 
+            IPropertiesService propertiesService)
         {
             _categoriesRepository = categoriesRepository ?? throw new ArgumentNullException(nameof(categoriesRepository));
+            _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
+            _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
         }
 
-        public PagedList<CategoryResponse> Handle(PageFilterQuery query)
+        public CategoriesViewModel Handle(PageFilterQuery query)
         {
             var options = query.MapToPageOptions();
             var categoryEntities = _categoriesRepository.GetCategories(options);
 
-            var categoriesPagedList = categoryEntities.MapCategoryResponsePagedList();
+            var categories = categoryEntities.categries
+                .Select(ce => ce.MapCategoryResponse())
+                .ToList();
 
-            return categoriesPagedList;
+            var result = _pagedListService.CreatePagedList(categories, categoryEntities.count, options);
+
+            var viewModel = new CategoriesViewModel
+            {
+                Categories = result.Entities,
+                Pagination = result.Pagination,
+                ToolbarViewModel = new AdminToolbarViewModel
+                {
+                    LinkToForm = string.Empty,
+                    IsFormButtonVisible = true
+                },
+                FilterProps = _propertiesService.GetCategoryFilterProps(),
+                TableHeaders = _propertiesService.GetCategorySortingProps()
+            };
+            return viewModel;
         }
 
         public Category Handle(EntityIdQuery query)
@@ -63,9 +86,11 @@ namespace BooksStore.App.Handlers.Query
             };
 
             var categoryEntities = _categoriesRepository.GetCategories(options);
-            var categoriesPagedList = categoryEntities.MapCategoryResponsePagedList();
+            var categories = categoryEntities.categries
+                .Select(ce => ce.MapCategoryResponse())
+                .ToList();
 
-            return categoriesPagedList.Entities;
+            return categories;
         }
 
         public List<StoreCategoryResponse> Handle(StoreCategoryQuery query)

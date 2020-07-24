@@ -13,30 +13,32 @@ using OnlineBooksStore.App.Handlers.Interfaces;
 namespace BooksStore.App.Handlers.Query
 {
     public class BookQueryHandler : 
-        IQueryHandler<StorePageFilterQuery, BooksViewModel>,
-        IQueryHandler<PageFilterQuery, PagedList<BookResponse>>,
+        IQueryHandler<StorePageFilterQuery, StoreBooksViewModel>,
+        IQueryHandler<PageFilterQuery, BooksViewModel>,
         IQueryHandler<BookIdQuery, BookResponse>
     {
         private readonly IBooksRepository _booksRepository;
         private readonly IPagedListService<BookResponse> _pagedListService;
         private readonly IPropertiesService _propertiesService;
 
-        public BookQueryHandler(IBooksRepository booksRepository, 
-            IPagedListService<BookResponse> pagedListService, IPropertiesService propertiesService)
+        public BookQueryHandler(
+            IBooksRepository booksRepository, 
+            IPagedListService<BookResponse> pagedListService, 
+            IPropertiesService propertiesService)
         {
             _booksRepository = booksRepository ?? throw new ArgumentNullException(nameof(booksRepository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
             _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
         }
 
-        public BooksViewModel Handle(StorePageFilterQuery query)
+        public StoreBooksViewModel Handle(StorePageFilterQuery query)
         {
             PageFilterQuery pageFilter = query;
-            var response = Handle(pageFilter);
+            var response = Handle1(pageFilter);
             var displayedBooksCount = response?.Entities?.Count ?? 0;
             var booksGrid = CreateBooksGrid(response?.Entities ?? new List<BookResponse>(), 4, displayedBooksCount);
 
-            var result = new BooksViewModel
+            var result = new StoreBooksViewModel
             {
                 Books = booksGrid,
                 Pagination = response?.Pagination,
@@ -50,7 +52,7 @@ namespace BooksStore.App.Handlers.Query
             return result;
         }
 
-        public PagedList<BookResponse> Handle(PageFilterQuery query)
+        private PagedList<BookResponse> Handle1(PageFilterQuery query)
         {
             var options = query.MapToPageOptions();
             var bookEntities = _booksRepository.GetBooks(options);
@@ -61,6 +63,31 @@ namespace BooksStore.App.Handlers.Query
             var result = _pagedListService.CreatePagedList(books, bookEntities.count, options);
 
             return result;
+        }
+
+        public BooksViewModel Handle(PageFilterQuery query)
+        {
+            var options = query.MapToPageOptions();
+            var bookEntities = _booksRepository.GetBooks(options);
+            var books = bookEntities.books
+                .Select(b => b.MapBookResponse())
+                .ToList();
+
+            var result = _pagedListService.CreatePagedList(books, bookEntities.count, options);
+
+            var viewModel = new BooksViewModel()
+            {
+                Books = result.Entities,
+                Pagination = result.Pagination,
+                ToolbarViewModel = new AdminToolbarViewModel
+                {
+                    LinkToForm = string.Empty,
+                    IsFormButtonVisible = true
+                },
+                FilterProps = _propertiesService.GetBookFilterProps(),
+                TableHeaders = _propertiesService.GetBooksSortingProps()
+            };
+            return viewModel;
         }
 
         public BookResponse Handle(BookIdQuery query)

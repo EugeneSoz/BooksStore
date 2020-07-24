@@ -18,7 +18,7 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public PagedList<PublisherEntity> GetPublishers(PageOptions options)
+        public (int count, List<PublisherEntity> publishers) GetPublishers(PageOptions options)
         {
             if (string.IsNullOrEmpty(options.SortPropertyName))
             {
@@ -36,7 +36,7 @@ namespace BooksStore.Persistence.Repositories
                 var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
                 var publishers = connection.Query<PublisherEntity>(sql);
 
-                return new PagedList<PublisherEntity>();
+                return (rowsCount, publishers.ToList());
             }
         }
 

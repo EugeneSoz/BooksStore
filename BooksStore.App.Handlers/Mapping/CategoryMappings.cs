@@ -5,7 +5,6 @@ using BooksStore.Domain.Contracts.Models.Books;
 using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Persistence.Entities;
-using OnlineBooksStore.Domain.Contracts.Models.Categories;
 
 namespace BooksStore.App.Handlers.Mapping
 {
@@ -97,6 +96,18 @@ namespace BooksStore.App.Handlers.Mapping
                     DisplayedName = e.ParentAndChildName,
                     ParentCategoryName = e.ParentCategory?.Name
                 }).ToList()
+            };
+        }
+
+        public static CategoryResponse MapCategoryResponse(this CategoryEntity categoryEntity)
+        {
+            return new CategoryResponse
+            {
+                Id = categoryEntity.Id,
+                Name = categoryEntity.Name,
+                ParentId = categoryEntity.ParentId,
+                DisplayedName = categoryEntity.ParentAndChildName,
+                ParentCategoryName = categoryEntity.ParentCategory?.Name
             };
         }
     }

@@ -18,7 +18,7 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public PagedList<CategoryEntity> GetCategories(PageOptions options)
+        public (int count, List<CategoryEntity> categries) GetCategories(PageOptions options)
         {
             if (string.IsNullOrEmpty(options.SortPropertyName))
             {
@@ -56,7 +56,7 @@ namespace BooksStore.Persistence.Repositories
                         return categoryEntry;
                     }, splitOn: nameof(CategoryEntity.Id)).ToList();
 
-                return new PagedList<CategoryEntity>();
+                return (rowsCount, result.ToList());
             }
         }
 

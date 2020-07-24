@@ -1,7 +1,6 @@
-﻿using BooksStore.Domain.Contracts.Models.Publishers;
+﻿using BooksStore.Domain.Contracts.Models.Categories;
+using BooksStore.Domain.Contracts.Models.Publishers;
 using OnlineBooksStore.Domain.Contracts.Models;
-using OnlineBooksStore.Domain.Contracts.Models.Categories;
-using OnlineBooksStore.Domain.Contracts.Models.Publishers;
 
 namespace BooksStore.Domain.Contracts.Models.Books
 {

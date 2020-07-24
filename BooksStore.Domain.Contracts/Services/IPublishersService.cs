@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using BooksStore.Domain.Contracts.Models.Pages;
+using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Domain.Contracts.Services;
-using OnlineBooksStore.Domain.Contracts.Models.Publishers;
 
 namespace OnlineBooksStore.Domain.Contracts.Services
 {

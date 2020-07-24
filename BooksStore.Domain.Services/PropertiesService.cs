@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Books;
+using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Domain.Contracts.Services;
-using OnlineBooksStore.Domain.Contracts.Models.Categories;
 
 namespace BooksStore.Domain.Services
 {

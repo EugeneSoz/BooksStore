@@ -6,31 +6,55 @@ using BooksStore.App.Handlers.Mapping;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Domain.Contracts.Repositories;
+using BooksStore.Domain.Contracts.Services;
+using BooksStore.Domain.Contracts.ViewModels;
 using OnlineBooksStore.App.Handlers.Interfaces;
-using OnlineBooksStore.Domain.Contracts.Models.Publishers;
 
 namespace BooksStore.App.Handlers.Query
 {
     public class PublisherQueryHandler : 
-        IQueryHandler<PageFilterQuery, PagedList<PublisherResponse>>,
+        IQueryHandler<PageFilterQuery, PublishersViewModel>,
         IQueryHandler<SearchTermQuery, List<PublisherResponse>>,
         IQueryHandler<PublisherIdQuery, Publisher>
     {
         private readonly IPublishersRepository _repository;
+        private readonly IPagedListService<PublisherResponse> _pagedListService;
+        private readonly IPropertiesService _propertiesService;
 
-        public PublisherQueryHandler(IPublishersRepository repository)
+        public PublisherQueryHandler(
+            IPublishersRepository repository, 
+            IPagedListService<PublisherResponse> pagedListService, 
+            IPropertiesService propertiesService)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
+            _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
         }
 
-        public PagedList<PublisherResponse> Handle(PageFilterQuery query)
+        public PublishersViewModel Handle(PageFilterQuery query)
         {
             var options = query.MapToPageOptions();
             var publisherEntities = _repository.GetPublishers(options);
 
-            var publishersPagedList = publisherEntities.MapPublisherResponsePagedList();
+            var publishers = publisherEntities.publishers
+                .Select(pe => pe.MapPublisherResponse())
+                .ToList();
 
-            return publishersPagedList;
+            var result = _pagedListService.CreatePagedList(publishers, publisherEntities.count, options);
+
+            var viewModel = new PublishersViewModel
+            {
+                Publishers = result.Entities,
+                Pagination = result.Pagination,
+                ToolbarViewModel = new AdminToolbarViewModel()
+                {
+                    LinkToForm = string.Empty,
+                    IsFormButtonVisible = true
+                },
+                FilterProps = _propertiesService.GetPublisherFilterProps(),
+                TableHeaders = _propertiesService.GetPublisherSortingProps()
+            };
+            return viewModel;
         }
 
         public List<PublisherResponse> Handle(SearchTermQuery query)
@@ -44,7 +68,7 @@ namespace BooksStore.App.Handlers.Query
             };
 
             var publisherEntities = _repository.GetPublishers(options);
-            var publishers = publisherEntities.Entities
+            var publishers = publisherEntities.publishers
                 .Select(e => e.MapPublisherResponse())
                 .ToList();
 

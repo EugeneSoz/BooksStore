@@ -11,7 +11,6 @@ using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Persistence.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using OnlineBooksStore.Domain.Contracts.Models.Publishers;
 
 namespace BooksStore.App.Client.Controllers
 {
@@ -27,9 +26,18 @@ namespace BooksStore.App.Client.Controllers
             _queryHandler = queryHandler;
         }
 
-        public IActionResult Index()
+        public IActionResult ShowPublishers(int page)
         {
-            return View();
+
+            var query = new PageFilterQuery()
+            {
+                CurrentPage = page == 0 ? 1 : page,
+                PageSize = 20,
+            };
+
+            var model = _queryHandler.Handle(query);
+            
+            return View("PublishersSection", model);
         }
 
                 [HttpGet("publisher/{id}")]
@@ -43,20 +51,6 @@ namespace BooksStore.App.Client.Controllers
             }
             catch (Exception exception)
             {
-                throw;
-            }
-        }
-
-        [HttpPost("publishers")]
-        public PagedResponse<PublisherResponse> GetPublishers([FromBody] PageFilterQuery query)
-        {
-            try
-            {
-                return _queryHandler.Handle(query);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
                 throw;
             }
         }

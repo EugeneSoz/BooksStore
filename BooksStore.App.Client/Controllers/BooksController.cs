@@ -6,7 +6,6 @@ using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Command;
 using BooksStore.App.Handlers.Query;
 using BooksStore.Domain.Contracts.Models.Books;
-using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Persistence.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -25,9 +24,17 @@ namespace BooksStore.App.Client.Controllers
             _commandHandler = commandHandler ?? throw new ArgumentNullException(nameof(commandHandler));
         }
 
-        public IActionResult Index()
+        public IActionResult ShowBooks(int page)
         {
-            return View();
+            var query = new PageFilterQuery()
+            {
+                CurrentPage = page == 0 ? 1 : page,
+                PageSize = 20,
+            };
+
+            var model = _queryHandler.Handle(query);
+            
+            return View("BooksSection", model);
         }
 
         [HttpGet("book/{id}")]
@@ -36,11 +43,6 @@ namespace BooksStore.App.Client.Controllers
             return _queryHandler.Handle(query);
         }
 
-        [HttpPost("books")]
-        public PagedResponse<BookResponse> GetBooks([FromBody] PageFilterQuery query)
-        {
-            return _queryHandler.Handle(query);
-        }
 
         [HttpPost("create")]
         public ActionResult CreateBook([FromBody] CreateBookCommand command)

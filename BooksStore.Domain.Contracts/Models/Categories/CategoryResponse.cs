@@ -1,6 +1,4 @@
-﻿using BooksStore.Domain.Contracts.Models;
-
-namespace OnlineBooksStore.Domain.Contracts.Models.Categories
+﻿namespace BooksStore.Domain.Contracts.Models.Categories
 {
     public class CategoryResponse : EntityBase
     {

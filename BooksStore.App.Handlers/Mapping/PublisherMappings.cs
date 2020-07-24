@@ -4,7 +4,6 @@ using BooksStore.Domain.Contracts.Models.Books;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Persistence.Entities;
-using OnlineBooksStore.Domain.Contracts.Models.Publishers;
 
 namespace BooksStore.App.Handlers.Mapping
 {
