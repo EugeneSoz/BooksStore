@@ -15,7 +15,7 @@ namespace BooksStore.App.Handlers.Query
     public class PublisherQueryHandler : 
         IQueryHandler<PageFilterQuery, PublishersViewModel>,
         IQueryHandler<SearchTermQuery, List<PublisherResponse>>,
-        IQueryHandler<PublisherIdQuery, Publisher>
+        IQueryHandler<PublisherIdQuery, PublisherFormViewModel>
     {
         private readonly IPublishersRepository _repository;
         private readonly IPagedListService<PublisherResponse> _pagedListService;
@@ -48,7 +48,7 @@ namespace BooksStore.App.Handlers.Query
                 Pagination = result.Pagination,
                 ToolbarViewModel = new AdminToolbarViewModel()
                 {
-                    LinkToForm = string.Empty,
+                    FormUrl = string.Empty,
                     IsFormButtonVisible = true
                 },
                 FilterProps = _propertiesService.GetPublisherFilterProps(),
@@ -75,12 +75,17 @@ namespace BooksStore.App.Handlers.Query
             return publishers;
         }
 
-        public Publisher Handle(PublisherIdQuery query)
+        public PublisherFormViewModel Handle(PublisherIdQuery query)
         {
             var publisherEntity = _repository.GetPublisher(query.Id);
             var publisher = publisherEntity.MapPublisher();
 
-            return publisher;
+            return new PublisherFormViewModel
+            {
+                Publisher = publisher,
+                RelatedBooks = publisher.Books,
+                ToolbarViewModel = new AdminToolbarViewModel()
+            };
         }
     }
 }

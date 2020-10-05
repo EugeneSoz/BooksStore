@@ -50,7 +50,7 @@ namespace BooksStore.App.Handlers.Query
                 Pagination = result.Pagination,
                 ToolbarViewModel = new AdminToolbarViewModel
                 {
-                    LinkToForm = string.Empty,
+                    FormUrl = string.Empty,
                     IsFormButtonVisible = true
                 },
                 FilterProps = _propertiesService.GetCategoryFilterProps(),

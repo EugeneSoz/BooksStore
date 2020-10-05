@@ -1,29 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BooksStore.App.Client.Filters;
 using BooksStore.App.Contracts.Command;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Command;
 using BooksStore.App.Handlers.Query;
-using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Persistence.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace BooksStore.App.Client.Controllers
 {
+    [GeneralException]
     public class PublishersController : Controller
     {
         private readonly PublisherCommandHandler _commandHandler;
         private readonly PublisherQueryHandler _queryHandler;
+        private readonly IUrlHelper _urlHelper;
 
         public PublishersController(PublisherCommandHandler commandHandler, 
-            PublisherQueryHandler queryHandler)
+            PublisherQueryHandler queryHandler, IUrlHelperFactory urlHelperFactory,
+            IActionContextAccessor actionContextAccessor)
         {
             _commandHandler = commandHandler;
             _queryHandler = queryHandler;
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
         public IActionResult ShowPublishers(int page)
@@ -36,18 +40,19 @@ namespace BooksStore.App.Client.Controllers
             };
 
             var model = _queryHandler.Handle(query);
+            model.ToolbarViewModel.FormUrl = _urlHelper.Action("CreatePublisher", "Publishers", new { Id = 0 });
             
             return View("PublishersSection", model);
         }
 
-                [HttpGet("publisher/{id}")]
-        public Publisher GetPublisher([FromRoute] PublisherIdQuery query)
+        [HttpGet]
+        public IActionResult CreatePublisher([FromRoute] PublisherIdQuery query)
         {
             try
             {
                 var publiser = _queryHandler.Handle(query);
 
-                return publiser;
+                return View("PublisherForm", publiser);
             }
             catch (Exception exception)
             {
@@ -55,14 +60,8 @@ namespace BooksStore.App.Client.Controllers
             }
         }
 
-        [HttpPost("publishersforselection")]
-        public List<PublisherResponse> GetPublishersForSelection([FromBody] SearchTermQuery query)
-        {
-            return _queryHandler.Handle(query);
-        }
-
-        [HttpPost("create")]
-        public ActionResult CreatePublisher([FromBody] CreatePublisherCommand command)
+        [HttpPost]
+        public IActionResult CreatePublisher([FromBody] CreatePublisherCommand command)
         {
             if (!ModelState.IsValid)
             {
@@ -82,6 +81,14 @@ namespace BooksStore.App.Client.Controllers
 
             return Created("", publisher);
         }
+
+        [HttpPost("publishersforselection")]
+        public List<PublisherResponse> GetPublishersForSelection([FromBody] SearchTermQuery query)
+        {
+            return _queryHandler.Handle(query);
+        }
+
+        
 
         [HttpPut("update")]
         public ActionResult UpdatePublisher([FromBody] UpdatePublisherCommand command)

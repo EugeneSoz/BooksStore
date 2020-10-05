@@ -3,6 +3,6 @@
     public class AdminToolbarViewModel
     {
         public bool IsFormButtonVisible { get; set; }
-        public string LinkToForm { get; set; }
+        public string FormUrl { get; set; }
     }
 }

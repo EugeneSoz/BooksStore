@@ -1,6 +1,9 @@
 using BooksStore.App.Client.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +20,7 @@ namespace BooksStore.App.Client
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddControllersWithViews();
             services.AddRepositories(_configuration);
             services.AddCommandsAndQueries();
@@ -28,6 +32,7 @@ namespace BooksStore.App.Client
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseRequestLocalization("ru-RU");
             app.UseDeveloperExceptionPage();
             app.UseStatusCodePages();
             app.UseStaticFiles();
@@ -35,6 +40,9 @@ namespace BooksStore.App.Client
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute("pub",
+                    "Publisher/CreateOrEdit/{Id:long}",
+                    new {controller = "Publishers", action = "CreatePublisher"});
                 endpoints.MapControllerRoute("catpage",
                     "{category}/Page{page:int}",
                     new { Controller = "Store", action = "ShowBooks" });
@@ -52,7 +60,7 @@ namespace BooksStore.App.Client
 
                 endpoints.MapControllerRoute(
                     name: "defalult",
-                    pattern: "{controller=Store}/{action=ShowBooks}");
+                    pattern: "{controller=Publishers}/{action=ShowPublishers}");
             });
         }
     }

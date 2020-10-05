@@ -38,9 +38,11 @@
                         <td>@publisher.Country</td>
                         <td>
                             <div class="d-inline-flex">
-                                <button type="button" class="btn btn-sm btn-warning text-white ml-1">
+                                <a asp-controller="Publishers" 
+                                   asp-action="CreatePublisher" 
+                                   asp-route-Id="@publisher.Id" class="btn btn-sm btn-warning text-white ml-1">
                                     <i class='fas fa-pencil-alt fa-lg'></i>
-                                </button>
+                                </a>
                                 <button type="button" class="btn btn-sm btn-danger ml-1">
                                     <i class='fas fa-trash-alt fa-lg'></i>
                                 </button>
