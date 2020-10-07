@@ -5,6 +5,6 @@ namespace BooksStore.Domain.Contracts.Services
 {
     public interface IPagedListService<T>
     {
-        PagedList<T> CreatePagedList(List<T> entities, int pagesCount, PageOptions options = null);
+        PagedList<T> CreatePagedList(IEnumerable<T> entities, int pagesCount, QueryConditions conditions = null);
     }
 }

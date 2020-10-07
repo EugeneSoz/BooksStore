@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Persistence.Entities;
 using BooksStore.Persistence.Repositories.Providers;
@@ -18,24 +17,14 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, List<CategoryEntity> categries) GetCategories(PageOptions options)
+        public (int count, IEnumerable<CategoryEntity> categries) GetCategories(string queryConditions)
         {
-            if (string.IsNullOrEmpty(options.SortPropertyName))
-            {
-                options.SortPropertyName = nameof(CategoryEntity.Name);
-            }
-            if (options.SortPropertyName == $"{nameof(CategoryEntity.Name)}")
-            {
-                options.SortPropertyName = $"{nameof(CategoryEntity.ParentAndChildName)}";
-            }
-
             const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
-                                   FROM Categories";
-            var queryProcessing = new QueryProcessing<PageOptions>(options);
+                                            FROM Categories";
             var sql = $@"SELECT *
                           FROM Categories AS P
                                    LEFT JOIN Categories AS C ON P.Id = C.ParentId AND P.ParentId IS NULL
-                         {queryProcessing.GetQueryConditions("P")}";
+                         {queryConditions}";
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var categoryDictionary = new Dictionary<long, CategoryEntity>();
@@ -54,9 +43,9 @@ namespace BooksStore.Persistence.Repositories
                         }
 
                         return categoryEntry;
-                    }, splitOn: nameof(CategoryEntity.Id)).ToList();
+                    }, splitOn: nameof(CategoryEntity.Id));
 
-                return (rowsCount, result.ToList());
+                return (rowsCount, result);
             }
         }
 

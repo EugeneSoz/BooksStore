@@ -13,34 +13,44 @@ using OnlineBooksStore.App.Handlers.Interfaces;
 namespace BooksStore.App.Handlers.Query
 {
     public class PublisherQueryHandler : 
-        IQueryHandler<PageFilterQuery, PublishersViewModel>,
+        IQueryHandler<PageConditionsQuery, PublishersViewModel>,
         IQueryHandler<SearchTermQuery, List<PublisherResponse>>,
         IQueryHandler<PublisherIdQuery, PublisherFormViewModel>
     {
         private readonly IPublishersRepository _repository;
         private readonly IPagedListService<PublisherResponse> _pagedListService;
         private readonly IPropertiesService _propertiesService;
+        private readonly IQueryProcessingService _queryProcessingService;
 
         public PublisherQueryHandler(
             IPublishersRepository repository, 
             IPagedListService<PublisherResponse> pagedListService, 
-            IPropertiesService propertiesService)
+            IPropertiesService propertiesService,
+            IQueryProcessingService queryProcessingService)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
             _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
+            _queryProcessingService = queryProcessingService ?? throw new ArgumentNullException(nameof(queryProcessingService));
         }
 
-        public PublishersViewModel Handle(PageFilterQuery query)
+        public PublishersViewModel Handle(PageConditionsQuery query)
         {
-            var options = query.MapToPageOptions();
-            var publisherEntities = _repository.GetPublishers(options);
+            var conditions = new QueryConditions
+            {
+                CurrentPage = query.CurrentPage,
+                PageSize = query.PageSize,
+                OrderConditions = new []{ new Condition {PropertyName = "Id", PropertyValue = "ASC" } }
+            };
+
+            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var publisherEntities = _repository.GetPublishers(queryCondition);
 
             var publishers = publisherEntities.publishers
                 .Select(pe => pe.MapPublisherResponse())
                 .ToList();
 
-            var result = _pagedListService.CreatePagedList(publishers, publisherEntities.count, options);
+            var result = _pagedListService.CreatePagedList(publishers, publisherEntities.count, conditions);
 
             var viewModel = new PublishersViewModel
             {
@@ -54,6 +64,7 @@ namespace BooksStore.App.Handlers.Query
                 FilterProps = _propertiesService.GetPublisherFilterProps(),
                 TableHeaders = _propertiesService.GetPublisherSortingProps()
             };
+
             return viewModel;
         }
 
@@ -67,7 +78,11 @@ namespace BooksStore.App.Handlers.Query
                 PageSize = 10
             };
 
-            var publisherEntities = _repository.GetPublishers(options);
+            var conditions = new QueryConditions();
+
+            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+
+            var publisherEntities = _repository.GetPublishers(queryCondition);
             var publishers = publisherEntities.publishers
                 .Select(e => e.MapPublisherResponse())
                 .ToList();

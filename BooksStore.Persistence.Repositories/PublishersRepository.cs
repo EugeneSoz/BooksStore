@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Persistence.Entities;
 using BooksStore.Persistence.Repositories.Providers;
@@ -18,25 +17,19 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, List<PublisherEntity> publishers) GetPublishers(PageOptions options)
+        public (int count, IEnumerable<PublisherEntity> publishers) GetPublishers(string queryConditions)
         {
-            if (string.IsNullOrEmpty(options.SortPropertyName))
-            {
-                options.SortPropertyName = nameof(PublisherEntity.Name);
-                options.DescendingOrder = false;
-            }
             const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
-                                   FROM Publishers";
+                                            FROM Publishers";
 
-            var queryProcessing = new QueryProcessing<PageOptions>(options);
             var sql = $@"SELECT *
-                                FROM Publishers {queryProcessing.GetQueryConditions()}";
+                           FROM Publishers{queryConditions}";
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
                 var publishers = connection.Query<PublisherEntity>(sql);
 
-                return (rowsCount, publishers.ToList());
+                return (rowsCount, publishers);
             }
         }
 

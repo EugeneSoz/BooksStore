@@ -6,7 +6,7 @@ namespace BooksStore.Domain.Contracts.Repositories
 {
     public interface ICategoriesRepository
     {
-        (int count, List<CategoryEntity> categries) GetCategories(PageOptions options);
+        (int count, IEnumerable<CategoryEntity> categries) GetCategories(string queryConditions);
         CategoryEntity GetCategory(long id);
         List<CategoryEntity> GetStoreCategories();
         List<CategoryEntity> GetParentCategories();

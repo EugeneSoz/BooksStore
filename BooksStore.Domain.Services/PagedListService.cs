@@ -28,33 +28,33 @@ namespace BooksStore.Domain.Services
         /// </summary>
         private int _rightDelta;
 
-        public PagedList<T> CreatePagedList(List<T> entities, int pagesCount, PageOptions options)
+        public PagedList<T> CreatePagedList(IEnumerable<T> entities, int pagesCount, QueryConditions conditions)
         {
-            if (options == null)
+            if (conditions == null)
             {
                 return CreateDefaultPagedList();
             }
             _leftPagesCount = _displayedPagesCount / 2;
             _rightPagesCount = _displayedPagesCount / 2;
-            var totalPages = (int)Math.Ceiling(pagesCount / (double)options.PageSize);
+            var totalPages = (int)Math.Ceiling(pagesCount / (double)conditions.PageSize);
             //то, что нужно добавить к левой границе
-            _leftDelta = options.CurrentPage + _rightPagesCount > totalPages
-                ? options.CurrentPage + _rightPagesCount - totalPages
+            _leftDelta = conditions.CurrentPage + _rightPagesCount > totalPages
+                ? conditions.CurrentPage + _rightPagesCount - totalPages
                 : 0;
-            var leftBoundary = options.CurrentPage - _leftPagesCount - _leftDelta;
+            var leftBoundary = conditions.CurrentPage - _leftPagesCount - _leftDelta;
 
-            _rightDelta = options.CurrentPage - _leftPagesCount < 1
-                ? 1 - (options.CurrentPage - _leftPagesCount)
+            _rightDelta = conditions.CurrentPage - _leftPagesCount < 1
+                ? 1 - (conditions.CurrentPage - _leftPagesCount)
                 : 0;
-            var rightBoundary = options.CurrentPage + _rightPagesCount + _rightDelta;
+            var rightBoundary = conditions.CurrentPage + _rightPagesCount + _rightDelta;
 
             var pagedList = new PagedList<T>
             {
                 Entities = new List<T>(entities),
                 Pagination = new Pagination()
                 {
-                    CurrentPage = options.CurrentPage,
-                    PageSize = options.PageSize,
+                    CurrentPage = conditions.CurrentPage,
+                    PageSize = conditions.PageSize,
                     TotalPages = totalPages,
                     LeftBoundary = leftBoundary <= 0 ? 1 : leftBoundary,
                     RightBoundary = rightBoundary > totalPages ? totalPages : rightBoundary,

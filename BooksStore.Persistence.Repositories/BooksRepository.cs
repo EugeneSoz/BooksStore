@@ -18,22 +18,16 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, List<BookEntity> books) GetBooks(PageOptions options)
+        public (int count, IEnumerable<BookEntity> books) GetBooks(string queryConditions)
         {
-            if (string.IsNullOrEmpty(options.SortPropertyName))
-            {
-                options.SortPropertyName = nameof(BookEntity.Title);
-            }
-
             const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
                                             FROM Books";
 
-            var queryProcessing = new QueryProcessing<PageOptions>(options);
             var sql = $@"SELECT B.*, C.*, Parent.*, P.*
                                   FROM Books AS B
                                            INNER JOIN Categories AS C ON B.CategoryId = C.Id
                                            INNER JOIN Categories AS Parent ON Parent.Id = C.ParentId
-                                           INNER JOIN Publishers AS P ON B.PublisherId = P.Id {queryProcessing.GetQueryConditions()}";
+                                           INNER JOIN Publishers AS P ON B.PublisherId = P.Id {queryConditions}";
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
@@ -48,7 +42,7 @@ namespace BooksStore.Persistence.Repositories
                         return book;
                     }, splitOn: nameof(BookEntity.Id));
 
-                return (rowsCount, result.ToList());
+                return (rowsCount, result);
             }
         }
 

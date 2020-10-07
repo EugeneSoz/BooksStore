@@ -18,6 +18,7 @@ namespace BooksStore.App.Client.Infrastructure
             services.AddTransient<IPagedListService<Order>, PagedListService<Order>>();
             services.AddTransient<ICartService, CartService>();
             services.AddTransient<IPropertiesService, PropertiesService>();
+            services.AddTransient<IQueryProcessingService, QueryProcessingService>();
 
             return services;
         }

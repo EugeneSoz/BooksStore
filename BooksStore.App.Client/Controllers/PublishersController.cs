@@ -33,7 +33,7 @@ namespace BooksStore.App.Client.Controllers
         public IActionResult ShowPublishers(int page)
         {
 
-            var query = new PageFilterQuery()
+            var query = new PageConditionsQuery()
             {
                 CurrentPage = page == 0 ? 1 : page,
                 PageSize = 20,
