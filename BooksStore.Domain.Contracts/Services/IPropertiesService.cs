@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using BooksStore.Domain.Contracts.Models;
+using BooksStore.Domain.Contracts.Models.Pages;
+using BooksStore.Domain.Contracts.Models.Properties;
 using OnlineBooksStore.Domain.Contracts.Models;
 
 namespace BooksStore.Domain.Contracts.Services
@@ -9,9 +11,9 @@ namespace BooksStore.Domain.Contracts.Services
         List<FilterSortingProps> GetPublisherFilterProps();
         List<FilterSortingProps> GetCategoryFilterProps();
         List<FilterSortingProps> GetBookFilterProps();
-        List<FilterSortingProps> GetPublisherSortingProps();
-        List<FilterSortingProps> GetCategorySortingProps();
-        List<FilterSortingProps> GetBooksSortingProps();
+        List<SortingProperty> GetPublisherSortingProps(QueryConditions queryConditions);
+        List<SortingProperty> GetCategorySortingProps();
+        List<SortingProperty> GetBooksSortingProps();
         List<ListItem> GetSortingProperties();
         List<ListItem> GetGridSizeProperties();
     }

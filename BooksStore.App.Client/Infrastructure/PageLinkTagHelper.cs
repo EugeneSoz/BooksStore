@@ -19,7 +19,9 @@ namespace BooksStore.App.Client.Infrastructure
             _urlHelperFactory = helperFactory;
         }
 
-        [ViewContext] [HtmlAttributeNotBound] public ViewContext ViewContext { get; set; }
+        [ViewContext] 
+        [HtmlAttributeNotBound] 
+        public ViewContext ViewContext { get; set; }
         public Pagination PageModel { get; set; }
         public string PageAction { get; set; }
 
@@ -33,8 +35,8 @@ namespace BooksStore.App.Client.Infrastructure
             var result = new TagBuilder("ul");
             result.AddCssClass("pagination");
 
-            var first = CreateTag(PaginationButtonType.First, PageModel.Pages, urlHelper);
-            var previous = CreateTag(PaginationButtonType.Previous, PageModel.Pages, urlHelper);
+            var first = CreateTag(PaginationButtonType.First, urlHelper);
+            var previous = CreateTag(PaginationButtonType.Previous, urlHelper);
 
             result.InnerHtml.AppendHtml(first);
             result.InnerHtml.AppendHtml(previous);
@@ -45,8 +47,8 @@ namespace BooksStore.App.Client.Infrastructure
                 result.InnerHtml.AppendHtml(tag);
             }
 
-            var next = CreateTag(PaginationButtonType.Next, PageModel.Pages, urlHelper);
-            var last = CreateTag(PaginationButtonType.Last, PageModel.Pages, urlHelper);
+            var next = CreateTag(PaginationButtonType.Next, urlHelper);
+            var last = CreateTag(PaginationButtonType.Last, urlHelper);
 
             result.InnerHtml.AppendHtml(next);
             result.InnerHtml.AppendHtml(last);
@@ -54,7 +56,7 @@ namespace BooksStore.App.Client.Infrastructure
             output.Content.AppendHtml(result);
         }
 
-        private TagBuilder CreateTag(PaginationButtonType buttonType, List<int> pages, IUrlHelper urlHelper)
+        private TagBuilder CreateTag(PaginationButtonType buttonType, IUrlHelper urlHelper)
         {
             var pageNumber = 0;
             var content = string.Empty;

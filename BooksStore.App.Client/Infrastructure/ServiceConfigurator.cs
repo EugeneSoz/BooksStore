@@ -1,4 +1,6 @@
-﻿using BooksStore.Domain.Contracts.Models.Books;
+﻿using AutoMapper;
+using BooksStore.App.Handlers.Mapping;
+using BooksStore.Domain.Contracts.Models.Books;
 using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Orders;
 using BooksStore.Domain.Contracts.Models.Publishers;
@@ -21,6 +23,11 @@ namespace BooksStore.App.Client.Infrastructure
             services.AddTransient<IQueryProcessingService, QueryProcessingService>();
 
             return services;
+        }
+
+        internal static IServiceCollection AddAutoMapper(this IServiceCollection services)
+        {
+            return services.AddAutoMapper(typeof(ApplicationLayerMappings));
         }
     }
 }

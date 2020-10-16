@@ -36,6 +36,7 @@
                         </td>
                         <td>@publisher.Name</td>
                         <td>@publisher.Country</td>
+                        <td>@publisher.Created.ToShortDateString()</td>
                         <td>
                             <div class="d-inline-flex">
                                 <a asp-controller="Publishers" 
@@ -62,7 +63,8 @@
 
         <div class="px-3 py-2 bg-light"
                  page-model="@Model.Pagination"
-                 page-action="ShowBooks"
-                 page-url-category="@Model.Pagination.CurrentPage"></div>
+                 page-action="ShowPublishers"
+                 page-url-propertyName="@Model.SortingProperty.PropertyName"
+                 page-url-order="@Model.SortingProperty.DisplayedName"></div>
         </div>
 </div>

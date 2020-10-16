@@ -21,6 +21,7 @@ namespace BooksStore.App.Client
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddAutoMapper();
             services.AddControllersWithViews();
             services.AddRepositories(_configuration);
             services.AddCommandsAndQueries();
@@ -40,9 +41,14 @@ namespace BooksStore.App.Client
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(null,
+                    "Publishers/Page{page}/{propertyName}/{order}", new {controller = "Publishers", action = "ShowPublishers"});
+                endpoints.MapControllerRoute(null,
+                    "Publishers/Page{page}", new {controller = "Publishers", action = "ShowPublishers"});
                 endpoints.MapControllerRoute("pub",
                     "Publisher/CreateOrEdit/{Id:long}",
                     new {controller = "Publishers", action = "CreatePublisher"});
+
                 endpoints.MapControllerRoute("catpage",
                     "{category}/Page{page:int}",
                     new { Controller = "Store", action = "ShowBooks" });

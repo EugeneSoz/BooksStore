@@ -1,29 +1,27 @@
-﻿@model BooksStore.Domain.Contracts.Models.FilterSortingProps
+﻿@model SortingProperty
 
 
     <div class="d-flex justify-content-between">
         <span>@Model.DisplayedName</span>
-        @if (false)
+        @if (Model.DescendingOrder != null)
         {
-            @*@if (!_descendingOrder)
+            @if (Model.DescendingOrder == false)
             {
-                <button *ngIf="!descendingOrder" class="btn btn-sm btn-success" tooltip="Отсортировано по возрастанию"
-                        (click)="onSort()">
+                <a href="@Model.UrlLink" class="btn btn-sm btn-success">
                     <i class="fas fa-caret-up fa-lg"></i>
-                </button>
+                </a>
             }
             else
             {
-                <button *ngIf="descendingOrder" class="btn btn-sm btn-success" tooltip="Отсортировано по убыванию"
-                        (click)="onSort()">
+                <a href="@Model.UrlLink" class="btn btn-sm btn-success">
                     <i class="fas fa-caret-down fa-lg"></i>
-                </button>
-            }*@
+                </a>
+            }
         }
         else
         {
-            <button class="btn btn-sm btn-primary">
-                <i class="fas fa-caret-up fa-lg"></i>
-            </button>
+            <a href="@Model.UrlLink" class="btn btn-sm btn-primary">
+                <i class="fas fa-minus"></i>
+            </a>
         }
     </div>

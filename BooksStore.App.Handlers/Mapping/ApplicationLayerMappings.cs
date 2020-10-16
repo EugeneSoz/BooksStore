@@ -1,4 +1,4 @@
-﻿namespace OnlineBooksStore.App.Handlers.Mapping
+﻿namespace BooksStore.App.Handlers.Mapping
 {
     public static class ApplicationLayerMappings
     {

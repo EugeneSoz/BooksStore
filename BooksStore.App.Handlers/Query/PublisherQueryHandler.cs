@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Mapping;
 using BooksStore.Domain.Contracts.Models.Pages;
+using BooksStore.Domain.Contracts.Models.Properties;
 using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Domain.Contracts.Services;
@@ -21,36 +23,33 @@ namespace BooksStore.App.Handlers.Query
         private readonly IPagedListService<PublisherResponse> _pagedListService;
         private readonly IPropertiesService _propertiesService;
         private readonly IQueryProcessingService _queryProcessingService;
+        private readonly IMapper _mapper;
 
         public PublisherQueryHandler(
             IPublishersRepository repository, 
             IPagedListService<PublisherResponse> pagedListService, 
             IPropertiesService propertiesService,
-            IQueryProcessingService queryProcessingService)
+            IQueryProcessingService queryProcessingService,
+            IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
             _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
             _queryProcessingService = queryProcessingService ?? throw new ArgumentNullException(nameof(queryProcessingService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public PublishersViewModel Handle(PageConditionsQuery query)
         {
-            var conditions = new QueryConditions
-            {
-                CurrentPage = query.CurrentPage,
-                PageSize = query.PageSize,
-                OrderConditions = new []{ new Condition {PropertyName = "Id", PropertyValue = "ASC" } }
-            };
+            var conditions = _mapper.Map<QueryConditions>(query);
 
             var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
-            var publisherEntities = _repository.GetPublishers(queryCondition);
+            var (count, publisherEntities) = _repository.GetPublishers(queryCondition);
 
-            var publishers = publisherEntities.publishers
-                .Select(pe => pe.MapPublisherResponse())
-                .ToList();
+            var publishers = publisherEntities
+                .Select(pe => _mapper.Map<PublisherResponse>(pe));
 
-            var result = _pagedListService.CreatePagedList(publishers, publisherEntities.count, conditions);
+            var result = _pagedListService.CreatePagedList(publishers, count, conditions);
 
             var viewModel = new PublishersViewModel
             {
@@ -62,7 +61,9 @@ namespace BooksStore.App.Handlers.Query
                     IsFormButtonVisible = true
                 },
                 FilterProps = _propertiesService.GetPublisherFilterProps(),
-                TableHeaders = _propertiesService.GetPublisherSortingProps()
+                TableHeaders = _propertiesService.GetPublisherSortingProps(conditions),
+                SortingProperty = new SortingProperty(conditions.OrderConditions[0].PropertyName, 
+                    conditions.OrderConditions[0].PropertyValue)
             };
 
             return viewModel;

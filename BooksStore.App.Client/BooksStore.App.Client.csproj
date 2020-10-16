@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BooksStore.App.Contracts\BooksStore.App.Contracts.csproj" />
     <ProjectReference Include="..\BooksStore.App.Handlers\BooksStore.App.Handlers.csproj" />
     <ProjectReference Include="..\BooksStore.Domain.Contracts\BooksStore.Domain.Contracts.csproj" />

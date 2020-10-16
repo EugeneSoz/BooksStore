@@ -120,6 +120,7 @@ BEGIN
     DECLARE @pprice DECIMAL(5, 2);
     DECLARE @rprice DECIMAL(5, 2);
     DECLARE @pageCount INT;
+    DECLARE @baseDate DATETIME = DATEADD(DAY, @subCategoriesInCategoriesCount, GETDATE())
     BEGIN TRANSACTION
         WHILE @i <= @categoriesCount
             BEGIN
@@ -132,12 +133,12 @@ BEGIN
                 WHILE @j <= @subCategoriesInCategoriesCount
                     BEGIN
                         -- создать подкатегорию
-                        INSERT INTO Categories (Name, ParentId)
-                        VALUES (CONCAT('SubCategory-', @i, '-', @j), @categoryId);
+                        INSERT INTO Categories (Name, ParentId, Created)
+                        VALUES (CONCAT('SubCategory-', @i, '-', @j), @categoryId, DATEADD(day, @j, @baseDate));
                         SET @subCategoryId = SCOPE_IDENTITY();
                         -- создать издательство
-                        INSERT INTO Publishers (Name, Country)
-                        VALUES (CONCAT('Publisher-', @i, '-', @j), 'Russia')
+                        INSERT INTO Publishers (Name, Country, Created)
+                        VALUES (CONCAT('Publisher-', @i, '-', @j), 'Russia', DATEADD(day, @j, @baseDate))
                         SET @publisherId = SCOPE_IDENTITY();
 
                         DECLARE @k INT = 1;
@@ -147,11 +148,11 @@ BEGIN
                                 SET @rprice = (RAND() * @pprice) + @pprice;
                                 SET @pageCount = RAND() * 1000;
                                 INSERT INTO Books (Title, Authors, Language, CategoryId, PublisherId, Year, PageCount,
-                                                   PurchasePrice, RetailPrice, Description)
+                                                   PurchasePrice, RetailPrice, Description, Created)
                                 VALUES (CONCAT('Book-', @i, '-', @j, '-', @k), CONCAT('Author-', @i, '-', @j, '-', @k),
                                         'Russian',
                                         @subCategoryId, @publisherId, 2020, CAST(@pageCount AS INT), @pprice, @rprice,
-                                        CONCAT('BookDescription-', @i, '-', @j, '-', @k))
+                                        CONCAT('BookDescription-', @i, '-', @j, '-', @k), DATEADD(day, @j, @baseDate))
                                 SET @k = @k + 1;
                             END
                         SET @j = @j + 1;

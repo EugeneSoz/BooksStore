@@ -30,13 +30,15 @@ namespace BooksStore.App.Client.Controllers
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
-        public IActionResult ShowPublishers(int page)
+        public IActionResult ShowPublishers(int page, string propertyName, string order)
         {
 
             var query = new PageConditionsQuery()
             {
                 CurrentPage = page == 0 ? 1 : page,
                 PageSize = 20,
+                PropertyName = propertyName,
+                Order = order
             };
 
             var model = _queryHandler.Handle(query);

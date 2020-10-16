@@ -4,7 +4,6 @@ using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Persistence.Entities;
 using OnlineBooksStore.App.Contracts.Command;
 using OnlineBooksStore.App.Handlers.Interfaces;
-using OnlineBooksStore.App.Handlers.Mapping;
 
 namespace BooksStore.App.Handlers.Command
 {

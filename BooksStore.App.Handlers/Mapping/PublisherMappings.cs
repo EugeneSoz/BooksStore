@@ -11,11 +11,12 @@ namespace BooksStore.App.Handlers.Mapping
     {
         public static PublisherResponse MapPublisherResponse(this PublisherEntity publisherEntity)
         {
-            return new Publisher
+            return new PublisherResponse()
             {
                 Id = publisherEntity.Id,
                 Name = publisherEntity.Name,
-                Country = publisherEntity.Country
+                Country = publisherEntity.Country,
+                Created = publisherEntity.Created
             };
         }
 
@@ -26,6 +27,7 @@ namespace BooksStore.App.Handlers.Mapping
                 Id = publisherEntity.Id,
                 Name = publisherEntity.Name,
                 Country = publisherEntity.Country,
+                Created = publisherEntity.Created,
                 Books = publisherEntity.Books.Select(b => new RelatedBook
                 {
                     Id = b.Id,

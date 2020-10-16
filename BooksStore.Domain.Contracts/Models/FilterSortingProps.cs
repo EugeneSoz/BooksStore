@@ -10,5 +10,7 @@
 
         public string PropertyName { get; }
         public string DisplayedName { get; }
+        public string UrlLink { get; set; }
+        public bool? DescendingOrder { get; set; }
     }
 }
