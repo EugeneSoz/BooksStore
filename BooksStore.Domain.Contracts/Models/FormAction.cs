@@ -1,6 +1,6 @@
 ﻿namespace BooksStore.Domain.Contracts.Models
 {
-    public enum FilterAction
+    public enum FormAction
     {
         Search,
         Cancel

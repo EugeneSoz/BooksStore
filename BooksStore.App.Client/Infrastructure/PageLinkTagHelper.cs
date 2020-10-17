@@ -116,7 +116,7 @@ namespace BooksStore.App.Client.Infrastructure
                     result = PageModel.CurrentPage == 1;
                     break;
                 case PaginationButtonType.Last:
-                    result = PageModel.CurrentPage == PageModel.TotalPages;
+                    result = PageModel.CurrentPage == PageModel.TotalPages || PageModel.TotalPages == 0;
                     break;
                 case PaginationButtonType.Previous:
                     result = !PageModel.HasPreviousPage;

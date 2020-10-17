@@ -8,6 +8,6 @@ namespace BooksStore.Domain.Contracts.Models
         public List<FilterProperty> FilterProperties { get; set; }
         public string SelectedProperty { get; set; }
         public string SearchValue { get; set; }
-        public FilterAction FilterAction { get; set; }
+        public FormAction FormAction { get; set; }
     }
 }

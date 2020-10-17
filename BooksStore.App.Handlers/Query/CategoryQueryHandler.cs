@@ -44,7 +44,7 @@ namespace BooksStore.App.Handlers.Query
                 PageSize = query.PageSize
             };
 
-            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
             var categoryEntities = _categoriesRepository.GetCategories(queryCondition);
 
             var categories = categoryEntities.categries
@@ -96,7 +96,7 @@ namespace BooksStore.App.Handlers.Query
 
             var conditions = new QueryConditions();
 
-            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
             var categoryEntities = _categoriesRepository.GetCategories(queryCondition);
             var categories = categoryEntities.categries
                 .Select(ce => ce.MapCategoryResponse())

@@ -17,17 +17,18 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, IEnumerable<PublisherEntity> publishers) GetPublishers(string queryConditions)
+        public (int count, IEnumerable<PublisherEntity> publishers) GetPublishers(string queryConditions,
+            bool isSearchOrFilterUsed)
         {
-            var rowsCountSql = $@"  WITH Entities AS (
-                                      SELECT *
-                                        FROM Publishers{queryConditions}
-                                    )
-                                    SELECT COUNT(*) AS Count
-                                      FROM Entities";
-
             var sql = $@"SELECT *
                            FROM Publishers{queryConditions}";
+
+            var rowsCountSql = isSearchOrFilterUsed 
+                ? $@"WITH Entities AS ({sql})
+                     SELECT COUNT(*) AS Count
+                       FROM Entities"
+                : @"SELECT COUNT(*) FROM Publishers";
+
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);

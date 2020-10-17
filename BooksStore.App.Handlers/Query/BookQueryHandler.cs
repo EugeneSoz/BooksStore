@@ -68,7 +68,7 @@ namespace BooksStore.App.Handlers.Query
                 PageSize = query.PageSize
             };
 
-            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
             var bookEntities = _booksRepository.GetBooks(queryCondition);
             var books = bookEntities.books
                 .Select(b => b.MapBookResponse())
@@ -86,7 +86,7 @@ namespace BooksStore.App.Handlers.Query
                 CurrentPage = query.CurrentPage,
                 PageSize = query.PageSize
             };
-            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
             var options = query.MapToPageOptions();
             var bookEntities = _booksRepository.GetBooks(queryCondition);
             var books = bookEntities.books

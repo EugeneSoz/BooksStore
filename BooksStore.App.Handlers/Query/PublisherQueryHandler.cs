@@ -44,8 +44,8 @@ namespace BooksStore.App.Handlers.Query
         {
             var conditions = _mapper.Map<QueryConditions>(query);
 
-            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
-            var (count, publisherEntities) = _repository.GetPublishers(queryCondition);
+            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var (count, publisherEntities) = _repository.GetPublishers(queryCondition, isSearchOrFilterUsed);
 
             var publishers = publisherEntities
                 .Select(pe => _mapper.Map<PublisherResponse>(pe));
@@ -87,9 +87,9 @@ namespace BooksStore.App.Handlers.Query
 
             var conditions = new QueryConditions();
 
-            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
 
-            var publisherEntities = _repository.GetPublishers(queryCondition);
+            var publisherEntities = _repository.GetPublishers(queryCondition, isSearchOrFilterUsed);
             var publishers = publisherEntities.publishers
                 .Select(e => e.MapPublisherResponse())
                 .ToList();

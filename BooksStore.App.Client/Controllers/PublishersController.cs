@@ -42,9 +42,9 @@ namespace BooksStore.App.Client.Controllers
                 PageSize = 20,
                 PropertyName = propertyName,
                 Order = order,
-                FilterPropertyName = adminFilter.SelectedProperty,
-                FilterPropertyValue = adminFilter.SearchValue,
-                FilterAction = adminFilter.FilterAction
+                SearchPropertyName = adminFilter.SelectedProperty,
+                SearchPropertyValue = adminFilter.SearchValue,
+                FormAction = adminFilter.FormAction
             };
 
             var model = _queryHandler.Handle(query);

@@ -6,8 +6,9 @@ namespace BooksStore.Domain.Services
 {
     public class QueryProcessingService : IQueryProcessingService
     {
-        public string GenerateSqlQueryConditions(QueryConditions queryConditions)
+        public (string conditions, bool isSearchOrFilterUsed) GenerateSqlQueryConditions(QueryConditions queryConditions)
         {
+            var isSearchOrFilterUsed = false;
             var result = new StringBuilder();
             var searchConditions = GenerateSearchConditions(queryConditions.SearchConditions);
             var orderConditions = GenerateOrderConditions(queryConditions.OrderConditions);
@@ -16,6 +17,7 @@ namespace BooksStore.Domain.Services
 
             if (!string.IsNullOrEmpty(searchConditions))
             {
+                isSearchOrFilterUsed = true;
                 result.Append(" ");
                 result.AppendLine(searchConditions);
             }
@@ -32,7 +34,7 @@ namespace BooksStore.Domain.Services
                 result.AppendLine(rowsFetchConditions);
             }
 
-            return result.ToString();
+            return (result.ToString(), isSearchOrFilterUsed);
         }
 
         private string GenerateSearchConditions(Condition[] conditions)

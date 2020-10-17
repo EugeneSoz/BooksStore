@@ -4,7 +4,7 @@
 // Write your JavaScript code.
 
 let form = document.forms["filter"];
-let filterAction = document.forms["filter"]["FilterAction"];
+let formAction = document.forms["filter"]["FormAction"];
 let selectedProperty = document.getElementById("SelectedProperty");
 let searchValue = document.getElementById("SearchValue");
 let searchBtn = document.getElementById("search");
@@ -14,12 +14,12 @@ searchBtn.addEventListener("click", search);
 cancelBtn.addEventListener("click", cancel);
 
 function search() {
-    filterAction.value = 0;
+    formAction.value = 0;
     form.submit();
 }
 
 function cancel() {
-    filterAction.value = 1;
+    formAction.value = 1;
     searchValue.value = "";
     selectedProperty.selectedIndex = 0;
     form.submit();
