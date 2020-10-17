@@ -8,7 +8,7 @@ namespace BooksStore.Domain.Contracts.Services
 {
     public interface IPropertiesService
     {
-        List<FilterSortingProps> GetPublisherFilterProps();
+        List<FilterProperty> GetPublisherFilterProps();
         List<FilterSortingProps> GetCategoryFilterProps();
         List<FilterSortingProps> GetBookFilterProps();
         List<SortingProperty> GetPublisherSortingProps(QueryConditions queryConditions);

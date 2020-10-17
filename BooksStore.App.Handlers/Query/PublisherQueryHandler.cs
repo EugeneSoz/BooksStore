@@ -4,6 +4,7 @@ using System.Linq;
 using AutoMapper;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Mapping;
+using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Models.Properties;
 using BooksStore.Domain.Contracts.Models.Publishers;
@@ -60,7 +61,12 @@ namespace BooksStore.App.Handlers.Query
                     FormUrl = string.Empty,
                     IsFormButtonVisible = true
                 },
-                FilterProps = _propertiesService.GetPublisherFilterProps(),
+                AdminFilter = new AdminFilter
+                {
+                    FilterProperties = _propertiesService.GetPublisherFilterProps(),
+                    SelectedProperty = string.Empty,
+                    SearchValue = string.Empty
+                },
                 TableHeaders = _propertiesService.GetPublisherSortingProps(conditions),
                 SortingProperty = new SortingProperty(conditions.OrderConditions[0].PropertyName, 
                     conditions.OrderConditions[0].PropertyValue)

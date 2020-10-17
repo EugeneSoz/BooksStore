@@ -11,7 +11,7 @@ namespace BooksStore.Domain.Contracts.ViewModels
         public List<PublisherResponse> Publishers { get; set; }
         public Pagination Pagination { get; set; }
         public AdminToolbarViewModel ToolbarViewModel { get; set; }
-        public List<FilterSortingProps> FilterProps { get; set; }
+        public AdminFilter AdminFilter { get; set; }
         public List<SortingProperty> TableHeaders { get; set; }
         public SortingProperty SortingProperty { get; set; }
     }

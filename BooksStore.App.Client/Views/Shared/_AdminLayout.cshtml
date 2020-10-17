@@ -8,50 +8,51 @@
     <base href="~/" />
 </head>
 <body>
-<div class="container-fluid px-0">
-    <div class="row no-gutters">
-        <div id="admin-sidebar" class="col-lg-auto">
-            <ul class="nav flex-column">
-                <li class="sidebar-item">
-                    <a class="nav-link" asp-controller="Database" asp-action="ShowInfo">
-                        База данных
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="nav-link" asp-controller="Books" asp-action="ShowBooks">
-                        Книги
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="nav-link" asp-controller="Categories" asp-action="ShowCategories">
-                        Категории
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="nav-link" asp-controller="Publishers" asp-action="ShowPublishers">
-                        Издательства
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="nav-link" asp-controller="Order" asp-action="ShowOrders">
-                        Заказы
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="nav-link" asp-controller="Store" asp-action="ShowBooks">
-                        Магазин
-                    </a>
-                </li>
-            </ul>
-        </div>
-        <div id="admin-main-content" class="col-lg">
-            <div id="admin-scrollable-content">
-                @RenderBody()
+    <div class="container-fluid px-0">
+        <div class="row no-gutters">
+            <div id="admin-sidebar" class="col-lg-auto">
+                <ul class="nav flex-column">
+                    <li class="sidebar-item">
+                        <a class="nav-link" asp-controller="Database" asp-action="ShowInfo">
+                            База данных
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="nav-link" asp-controller="Books" asp-action="ShowBooks">
+                            Книги
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="nav-link" asp-controller="Categories" asp-action="ShowCategories">
+                            Категории
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="nav-link" asp-controller="Publishers" asp-action="ShowPublishers">
+                            Издательства
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="nav-link" asp-controller="Order" asp-action="ShowOrders">
+                            Заказы
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="nav-link" asp-controller="Store" asp-action="ShowBooks">
+                            Магазин
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div id="admin-main-content" class="col-lg">
+                <div id="admin-scrollable-content">
+                    @RenderBody()
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="~/dist/js/vendors.bundle.js"></script>
+    <script src="~/js/site.js"></script>
 </body>
 </html>

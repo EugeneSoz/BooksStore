@@ -19,8 +19,12 @@ namespace BooksStore.Persistence.Repositories
 
         public (int count, IEnumerable<PublisherEntity> publishers) GetPublishers(string queryConditions)
         {
-            const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
-                                            FROM Publishers";
+            var rowsCountSql = $@"  WITH Entities AS (
+                                      SELECT *
+                                        FROM Publishers{queryConditions}
+                                    )
+                                    SELECT COUNT(*) AS Count
+                                      FROM Entities";
 
             var sql = $@"SELECT *
                            FROM Publishers{queryConditions}";

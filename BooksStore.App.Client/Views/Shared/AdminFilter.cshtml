@@ -1,35 +1,37 @@
-﻿@model List<BooksStore.Domain.Contracts.Models.FilterSortingProps>
+﻿@model AdminFilter
 
 
 @if (Model != null)
 {
     <div class="card m-3">
         <div class="card-body">
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label font-weight-bold">Поиск по</label>
-                <div class="col-sm-10">
-                    <select type="text" class="form-control w-50">
-                        @foreach (var property in Model)
-                        {
-                            <option value="@property.PropertyName">@property.DisplayedName</option>
-                        }
-
-                    </select>
+            <form id="filter" asp-controller="Publishers" asp-action="ShowPublishers" method="post">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label font-weight-bold">Поиск по</label>
+                    <div class="col-sm-10">
+                        <select asp-for="SelectedProperty" class="form-control w-50">
+                            @foreach (var property in Model.FilterProperties)
+                            {
+                                <option selected="@(property.IsActive ? "selected" : null)" value="@property.PropertyName">@property.DisplayedName</option>
+                            }
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label font-weight-bold">Значение для поиска</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control w-50" placeholder="Введите значение" value="">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label font-weight-bold">Значение для поиска</label>
+                    <div class="col-sm-10">
+                        <input asp-for="SearchValue" class="form-control w-50" placeholder="Введите значение" />
+                        <input asp-for="FilterAction" type="hidden" />
+                    </div>
                 </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-2 col-form-label"></label>
-                <div class="col-sm-10">
-                    <button type="button" class="btn btn-primary">Найти</button>
-                    <button type="button" class="btn btn-warning ml-2">Отменить</button>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"></label>
+                    <div class="col-sm-10">
+                        <button id="search" type="submit" class="btn btn-primary">Найти</button>
+                        <button id="cancel" type="submit" class="btn btn-warning ml-2">Отменить</button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 }

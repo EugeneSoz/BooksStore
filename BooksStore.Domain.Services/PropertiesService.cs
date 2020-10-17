@@ -11,12 +11,13 @@ namespace BooksStore.Domain.Services
 {
     public class PropertiesService : IPropertiesService
     {
-        public List<FilterSortingProps> GetPublisherFilterProps()
+        public List<FilterProperty> GetPublisherFilterProps()
         {
-            return new List<FilterSortingProps>
+            return new List<FilterProperty>
             {
-                new FilterSortingProps(nameof(Publisher.Name), "Издательство"),
-                new FilterSortingProps(nameof(Publisher.Country), "Страна нахождения")
+                new FilterProperty(nameof(Publisher.Name), "Издательство", true),
+                new FilterProperty(nameof(Publisher.Country), "Страна нахождения", false),
+                new FilterProperty(nameof(Publisher.Created), "Дата создания издательства", false)
             };
         }
 

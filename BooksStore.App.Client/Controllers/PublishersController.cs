@@ -5,6 +5,7 @@ using BooksStore.App.Contracts.Command;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Command;
 using BooksStore.App.Handlers.Query;
+using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Persistence.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -30,15 +31,20 @@ namespace BooksStore.App.Client.Controllers
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
-        public IActionResult ShowPublishers(int page, string propertyName, string order)
+        [HttpGet]
+        [HttpPost]
+        public IActionResult ShowPublishers(AdminFilter adminFilter, int page, string propertyName, string order)
         {
 
-            var query = new PageConditionsQuery()
+            var query = new PageConditionsQuery
             {
-                CurrentPage = page == 0 ? 1 : page,
+                CurrentPage = page,
                 PageSize = 20,
                 PropertyName = propertyName,
-                Order = order
+                Order = order,
+                FilterPropertyName = adminFilter.SelectedProperty,
+                FilterPropertyValue = adminFilter.SearchValue,
+                FilterAction = adminFilter.FilterAction
             };
 
             var model = _queryHandler.Handle(query);
