@@ -19,17 +19,17 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, List<OrderEntity> orders) GetOrders(PageOptions options)
+        public (int count, List<OrderEntity> orders) GetOrders(PageOptions1 options1)
         {
-            if (string.IsNullOrEmpty(options.SortPropertyName))
+            if (string.IsNullOrEmpty(options1.SortPropertyName))
             {
-                options.SortPropertyName = nameof(PublisherEntity.Name);
-                options.DescendingOrder = false;
+                options1.SortPropertyName = nameof(PublisherEntity.Name);
+                options1.DescendingOrder = false;
             }
             const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
                                    FROM Orders";
 
-            var queryProcessing = new QueryProcessing<PageOptions>(options);
+            var queryProcessing = new QueryProcessing<PageOptions1>(options1);
             var sql = $@"SELECT O.*, C.*, P.*
                               FROM Orders AS O
                                        INNER JOIN Customers AS C ON O.CustomerId = C.Id

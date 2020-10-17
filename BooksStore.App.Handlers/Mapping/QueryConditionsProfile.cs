@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using BooksStore.App.Contracts.Query;
 using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Pages;
@@ -22,17 +23,24 @@ namespace BooksStore.App.Handlers.Mapping
                 .ForMember(d => d.SearchConditions,
                     opts =>
                     {
-                        opts.PreCondition(src => src.SearchPropertyName != null && src.FormAction == FormAction.Search);
+                        opts.PreCondition(src => src.SearchValue != null && src.FormAction == FormAction.Search);
                         opts.MapFrom(src => new[]
                         {
-                            new Condition(src.SearchPropertyName, src.SearchPropertyValue)
+                            new Condition(src.SelectedPropertyName, src.SearchValue)
                         });
+                    })
+                
+                .ForMember(d => d.FilterConditions,
+                    opts =>
+                    {
+                        opts.PreCondition(src => (src.FormAction != FormAction.Cancel) && src.FirstRangeValue != null || src.SecondRangeValue != null);
+                        opts.MapFrom(GetFilterConditions);
                     });
         }
 
         private int DefineCurrentPage(PageConditionsQuery source, QueryConditions destination)
         {
-            if (source.SearchPropertyName != null)
+            if (source.SelectedPropertyName != null)
             {
                 source.CurrentPage = 1;
 
@@ -40,6 +48,22 @@ namespace BooksStore.App.Handlers.Mapping
             }
 
             return source.CurrentPage == 0 ? 1 : source.CurrentPage;
+        }
+
+        private Condition[] GetFilterConditions(PageConditionsQuery source, QueryConditions destination)
+        {
+            var conditions = new List<Condition>();
+            if (source.FirstRangeValue != null)
+            {
+                conditions.Add(new Condition(source.SelectedPropertyName, source.FirstRangeValue));
+            }
+
+            if (source.SecondRangeValue != null)
+            {
+                conditions.Add(new Condition(source.SelectedPropertyName, source.SecondRangeValue));
+            }
+
+            return conditions.ToArray();
         }
     }
 }

@@ -86,7 +86,7 @@ namespace BooksStore.App.Handlers.Query
 
         public List<CategoryResponse> Handle(SearchTermQuery query)
         {
-            PageOptions options = new PageOptions
+            PageOptions1 options1 = new PageOptions1
             {
                 SearchTerm = query.Value,
                 SearchPropertyNames = new[] { nameof(CategoryEntity.Name) },

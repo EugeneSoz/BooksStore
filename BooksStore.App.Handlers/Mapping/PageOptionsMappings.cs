@@ -5,9 +5,9 @@ namespace BooksStore.App.Handlers.Mapping
 {
     public static class PageOptionsMappings
     {
-        public static PageOptions MapToPageOptions(this PageFilterQuery query)
+        public static PageOptions1 MapToPageOptions(this PageFilterQuery query)
         {
-            return new PageOptions
+            return new PageOptions1
             {
                 CurrentPage = query.CurrentPage,
                 PageSize = query.PageSize,

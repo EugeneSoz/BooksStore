@@ -65,7 +65,9 @@ namespace BooksStore.App.Handlers.Query
                 {
                     FilterProperties = _propertiesService.GetPublisherFilterProps(),
                     SelectedProperty = string.Empty,
-                    SearchValue = string.Empty
+                    SearchValue = string.Empty,
+                    Controller = "Publishers",
+                    Action = "ShowPublishers"
                 },
                 TableHeaders = _propertiesService.GetPublisherSortingProps(conditions),
                 SortingProperty = new SortingProperty(conditions.OrderConditions[0].PropertyName, 
@@ -77,7 +79,7 @@ namespace BooksStore.App.Handlers.Query
 
         public List<PublisherResponse> Handle(SearchTermQuery query)
         {
-            PageOptions options = new PageOptions
+            PageOptions1 options1 = new PageOptions1
             {
                 SearchTerm = query.Value,
                 SearchPropertyNames = new[] { nameof(Publisher.Name) },

@@ -42,9 +42,9 @@ namespace BooksStore.App.Client
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(null,
-                    "Publishers/Page{page}/{propertyName}/{order}", new {controller = "Publishers", action = "ShowPublishers"});
+                    "Publishers/Page{Page}/{PropertyName}/{Order}", new {controller = "Publishers", action = "ShowPublishers"});
                 endpoints.MapControllerRoute(null,
-                    "Publishers/Page{page}", new {controller = "Publishers", action = "ShowPublishers"});
+                    "Publishers/Page{Page}", new {controller = "Publishers", action = "ShowPublishers"});
                 endpoints.MapControllerRoute("pub",
                     "Publisher/CreateOrEdit/{Id:long}",
                     new {controller = "Publishers", action = "CreatePublisher"});

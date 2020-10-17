@@ -5,11 +5,11 @@ namespace BooksStore.Domain.Contracts.Models.Pages
 {
     public class QueryProcessing<T>
     {
-        private readonly PageOptions _options;
+        private readonly PageOptions1 _options1;
 
-        public QueryProcessing(PageOptions options)
+        public QueryProcessing(PageOptions1 options1)
         {
-            _options = options;
+            _options1 = options1;
         }
 
         public string GetQueryConditions(string alias = null)
@@ -21,20 +21,20 @@ namespace BooksStore.Domain.Contracts.Models.Pages
                 orderProperties.Length == 0 ? string.Empty : "ORDER BY " + orderProperties;
 
             return $"{whereCondition} {orderCondition}" +
-                   $" OFFSET {(_options.CurrentPage - 1) * _options.PageSize} ROWS FETCH NEXT {_options.PageSize} ROWS ONLY";
+                   $" OFFSET {(_options1.CurrentPage - 1) * _options1.PageSize} ROWS FETCH NEXT {_options1.PageSize} ROWS ONLY";
         }
 
         private List<string> GenerateQueryConditions()
         {
             var conditions = new List<string>();
-            if (_options.SearchPropertyNames?.Length == 1 && !string.IsNullOrEmpty(_options.SearchTerm))
+            if (_options1.SearchPropertyNames?.Length == 1 && !string.IsNullOrEmpty(_options1.SearchTerm))
             {
-                conditions.Add(Search(_options.SearchPropertyNames, _options.SearchTerm));
+                conditions.Add(Search(_options1.SearchPropertyNames, _options1.SearchTerm));
             }
 
-            if (!string.IsNullOrEmpty(_options.FilterPropertyName) && _options.FilterPropertyValue != 0)
+            if (!string.IsNullOrEmpty(_options1.FilterPropertyName) && _options1.FilterPropertyValue != 0)
             {
-                conditions.Add(Filter(_options.FilterPropertyName, _options.FilterPropertyValue));
+                conditions.Add(Filter(_options1.FilterPropertyName, _options1.FilterPropertyValue));
             }
 
             return conditions;
@@ -42,11 +42,11 @@ namespace BooksStore.Domain.Contracts.Models.Pages
 
         private string GenerateQueryOrderProperties(string alias)
         {
-            if (!string.IsNullOrEmpty(_options.SortPropertyName))
+            if (!string.IsNullOrEmpty(_options1.SortPropertyName))
             {
                 var prefix = !string.IsNullOrEmpty(alias) ? alias + "." : string.Empty;
-                var order = _options.DescendingOrder ? "DESC" : "ASC";
-                return $"{prefix}{_options.SortPropertyName} {order}";
+                var order = _options1.DescendingOrder ? "DESC" : "ASC";
+                return $"{prefix}{_options1.SortPropertyName} {order}";
             }
 
             return string.Empty;

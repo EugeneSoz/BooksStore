@@ -6,6 +6,7 @@ using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Command;
 using BooksStore.App.Handlers.Query;
 using BooksStore.Domain.Contracts.Models;
+using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Models.Publishers;
 using BooksStore.Persistence.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -33,19 +34,9 @@ namespace BooksStore.App.Client.Controllers
 
         [HttpGet]
         [HttpPost]
-        public IActionResult ShowPublishers(AdminFilter adminFilter, int page, string propertyName, string order)
+        public IActionResult ShowPublishers(AdminFilter adminFilter, PageOptions pageOptions)
         {
-
-            var query = new PageConditionsQuery
-            {
-                CurrentPage = page,
-                PageSize = 20,
-                PropertyName = propertyName,
-                Order = order,
-                SearchPropertyName = adminFilter.SelectedProperty,
-                SearchPropertyValue = adminFilter.SearchValue,
-                FormAction = adminFilter.FormAction
-            };
+            var query = new PageConditionsQuery(adminFilter, pageOptions);
 
             var model = _queryHandler.Handle(query);
             model.ToolbarViewModel.FormUrl = _urlHelper.Action("CreatePublisher", "Publishers", new { Id = 0 });
