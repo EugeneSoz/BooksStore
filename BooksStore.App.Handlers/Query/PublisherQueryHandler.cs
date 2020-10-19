@@ -54,7 +54,7 @@ namespace BooksStore.App.Handlers.Query
 
             var viewModel = new PublishersViewModel
             {
-                Publishers = result.Entities,
+                Entities = result.Entities,
                 Pagination = result.Pagination,
                 ToolbarViewModel = new AdminToolbarViewModel()
                 {
@@ -64,7 +64,7 @@ namespace BooksStore.App.Handlers.Query
                 AdminFilter = new AdminFilter
                 {
                     FilterProperties = _propertiesService.GetPublisherFilterProps(),
-                    SelectedProperty = string.Empty,
+                    SelectedProperty = conditions.FilterConditions != null ? conditions.FilterConditions[0].PropertyName : string.Empty,
                     SearchValue = string.Empty,
                     Controller = "Publishers",
                     Action = "ShowPublishers"

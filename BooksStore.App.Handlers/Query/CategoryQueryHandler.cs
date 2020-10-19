@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Mapping;
+using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Pages;
+using BooksStore.Domain.Contracts.Models.Properties;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Domain.Contracts.Services;
 using BooksStore.Domain.Contracts.ViewModels;
@@ -23,47 +26,54 @@ namespace BooksStore.App.Handlers.Query
         private readonly IPagedListService<CategoryResponse> _pagedListService;
         private readonly IPropertiesService _propertiesService;
         private readonly IQueryProcessingService _queryProcessingService;
+        private readonly IMapper _mapper;
 
         public CategoryQueryHandler(
             ICategoriesRepository categoriesRepository, 
             IPagedListService<CategoryResponse> pagedListService, 
             IPropertiesService propertiesService,
-            IQueryProcessingService queryProcessingService)
+            IQueryProcessingService queryProcessingService,
+            IMapper mapper)
         {
             _categoriesRepository = categoriesRepository ?? throw new ArgumentNullException(nameof(categoriesRepository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
             _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
             _queryProcessingService = queryProcessingService ?? throw new ArgumentNullException(nameof(queryProcessingService));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public CategoriesViewModel Handle(PageConditionsQuery query)
         {
-            var conditions = new QueryConditions
-            {
-                CurrentPage = query.CurrentPage,
-                PageSize = query.PageSize
-            };
+            var conditions = _mapper.Map<QueryConditions>(query);
 
             var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
-            var categoryEntities = _categoriesRepository.GetCategories(queryCondition);
+            var (count, categoryEntities) = _categoriesRepository.GetCategories(queryCondition, isSearchOrFilterUsed);
 
-            var categories = categoryEntities.categries
-                .Select(ce => ce.MapCategoryResponse())
-                .ToList();
+            var categories = categoryEntities
+                .Select(ce => _mapper.Map<CategoryResponse>(ce));
 
-            var result = _pagedListService.CreatePagedList(categories, categoryEntities.count, conditions);
+            var result = _pagedListService.CreatePagedList(categories, count, conditions);
 
             var viewModel = new CategoriesViewModel
             {
-                Categories = result.Entities,
+                Entities = result.Entities,
                 Pagination = result.Pagination,
                 ToolbarViewModel = new AdminToolbarViewModel
                 {
                     FormUrl = string.Empty,
                     IsFormButtonVisible = true
                 },
-                FilterProps = _propertiesService.GetCategoryFilterProps(),
-                TableHeaders = _propertiesService.GetCategorySortingProps()
+                AdminFilter = new AdminFilter
+                {
+                    FilterProperties = _propertiesService.GetCategoryFilterProps(),
+                    SelectedProperty = conditions.FilterConditions != null ? conditions.FilterConditions[0].PropertyName : string.Empty,
+                    SearchValue = string.Empty,
+                    Controller = "Categories",
+                    Action = "ShowCategories"
+                },
+                TableHeaders = _propertiesService.GetCategorySortingProps(conditions),
+                SortingProperty = new SortingProperty(conditions.OrderConditions[0].PropertyName, 
+                    conditions.OrderConditions[0].PropertyValue)
             };
             return viewModel;
         }
@@ -97,7 +107,7 @@ namespace BooksStore.App.Handlers.Query
             var conditions = new QueryConditions();
 
             var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
-            var categoryEntities = _categoriesRepository.GetCategories(queryCondition);
+            var categoryEntities = _categoriesRepository.GetCategories(queryCondition, isSearchOrFilterUsed);
             var categories = categoryEntities.categries
                 .Select(ce => ce.MapCategoryResponse())
                 .ToList();

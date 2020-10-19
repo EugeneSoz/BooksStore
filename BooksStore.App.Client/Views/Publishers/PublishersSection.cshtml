@@ -20,15 +20,15 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Publishers == null)
+                @if (Model.Entities == null)
                 {
                     <tr>
                         <td class="text-center" colspan="4">Получение данных</td>
                     </tr>
                 }
-                else if (Model.Publishers.Any())
+                else if (Model.Entities.Any())
                 {
-                    @foreach (var publisher in Model.Publishers)
+                    @foreach (var publisher in Model.Entities)
                     {
                     <tr>
                         <td>

@@ -15,17 +15,18 @@ namespace BooksStore.Domain.Services
         {
             return new List<FilterProperty>
             {
-                new FilterProperty(nameof(Publisher.Name), "Издательство", true),
-                new FilterProperty(nameof(Publisher.Country), "Страна нахождения", false),
-                new FilterProperty(nameof(Publisher.Created), "Дата создания издательства", false)
+                new FilterProperty(nameof(PublisherResponse.Name), "Издательство", true),
+                new FilterProperty(nameof(PublisherResponse.Country), "Страна нахождения", false),
+                new FilterProperty(nameof(PublisherResponse.Created), "Дата создания издательства", false)
             };
         }
 
-        public List<FilterSortingProps> GetCategoryFilterProps()
+        public List<FilterProperty> GetCategoryFilterProps()
         {
-            return new List<FilterSortingProps>
+            return new List<FilterProperty>
             {
-                new FilterSortingProps(nameof(Category.Name), "Категория"),
+                new FilterProperty(nameof(CategoryResponse.Name), "Категория", true),
+                new FilterProperty(nameof(CategoryResponse.Created), "Дата создания издательства", false)
             };
         }
 
@@ -67,13 +68,29 @@ namespace BooksStore.Domain.Services
             return props;
         }
 
-        public List<SortingProperty> GetCategorySortingProps()
+        public List<SortingProperty> GetCategorySortingProps(QueryConditions queryConditions)
         {
-            return new List<SortingProperty>
+            var props = new List<SortingProperty>
             {
                 new SortingProperty(nameof(Category.Id), "ID"),
-                new SortingProperty(nameof(Category.Name), "Категория")
+                new SortingProperty(nameof(Category.Name), "Категория"),
+                new SortingProperty(nameof(CategoryResponse.Created), "Дата создания категории")
             };
+
+            foreach (var property in props)
+            {
+                var order = nameof(SortingOrder.Asc);
+
+                if (property.PropertyName == queryConditions.OrderConditions[0].PropertyName)
+                {
+                    property.DescendingOrder = queryConditions.OrderConditions[0].PropertyValue == "DESC";
+                    order = property.DescendingOrder == true ? nameof(SortingOrder.Asc) : nameof(SortingOrder.Desc);
+                }
+
+                property.UrlLink = $"/Categories/Page{queryConditions.CurrentPage}/{property.PropertyName}/{order.ToUpper()}";
+            }
+
+            return props;
         }
 
         public List<SortingProperty> GetBooksSortingProps()

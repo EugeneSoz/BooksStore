@@ -17,14 +17,15 @@
                         </select>
                     </div>
                 </div>
-                <div id="simpleValue" class="form-group row">
+                <div id="simpleValue" class="form-group row @(Model.SelectedProperty == "Created" ? "d-none": null)">
                     <label class="col-sm-3 col-form-label font-weight-bold">Значение для поиска</label>
                     <div class="col-sm-5">
                         <input asp-for="SearchValue" class="form-control" placeholder="Введите значение" />
                         <input asp-for="FormAction" type="hidden" />
                     </div>
                 </div>
-                <div id="rangeValues" class="form-group row d-none">
+
+                <div id="rangeValues" class="form-group row @(Model.SelectedProperty != "Created" ? "d-none": null)">
                     <label class="col-sm-3 col-form-label font-weight-bold">Диапазон значений (с и по)</label>
                     <div class="col-sm-5">
                         <div class="form-group row mb-0">

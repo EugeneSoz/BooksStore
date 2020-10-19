@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{8009F1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{37454BFF-8D8E-4AF7-A795-0AB2BFABF29C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksStore.Domain.Services", "BooksStore.Domain.Services\BooksStore.Domain.Services.csproj", "{08F18D78-1865-4596-9139-68139D73C1A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BooksStore.Domain.Services", "BooksStore.Domain.Services\BooksStore.Domain.Services.csproj", "{08F18D78-1865-4596-9139-68139D73C1A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

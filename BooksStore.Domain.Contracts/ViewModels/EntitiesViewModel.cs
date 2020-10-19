@@ -2,13 +2,12 @@
 using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Models.Properties;
-using BooksStore.Domain.Contracts.Models.Publishers;
 
 namespace BooksStore.Domain.Contracts.ViewModels
 {
-    public abstract class EntitiesViewModel
+    public abstract class EntitiesViewModel<TEntity>
     {
-        public List<PublisherResponse> Publishers { get; set; }
+        public List<TEntity> Entities { get; set; }
         public Pagination Pagination { get; set; }
         public AdminToolbarViewModel ToolbarViewModel { get; set; }
         public AdminFilter AdminFilter { get; set; }

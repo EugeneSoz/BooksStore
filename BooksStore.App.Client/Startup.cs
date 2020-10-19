@@ -49,6 +49,14 @@ namespace BooksStore.App.Client
                     "Publisher/CreateOrEdit/{Id:long}",
                     new {controller = "Publishers", action = "CreatePublisher"});
 
+                endpoints.MapControllerRoute(null,
+                    "Categories/Page{Page}/{PropertyName}/{Order}", new {controller = "Categories", action = "ShowCategories"});
+                endpoints.MapControllerRoute(null,
+                    "Categories/Page{Page}", new {controller = "Categories", action = "ShowCategories"});
+                endpoints.MapControllerRoute("pub",
+                    "Category/CreateOrEdit/{Id:long}",
+                    new {controller = "Categories", action = "CreateCategory"});
+
                 endpoints.MapControllerRoute("catpage",
                     "{category}/Page{page:int}",
                     new { Controller = "Store", action = "ShowBooks" });

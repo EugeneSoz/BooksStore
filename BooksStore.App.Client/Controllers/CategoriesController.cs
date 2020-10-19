@@ -6,11 +6,14 @@ using BooksStore.App.Contracts.Command;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Command;
 using BooksStore.App.Handlers.Query;
+using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Categories;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Persistence.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace BooksStore.App.Client.Controllers
 {
@@ -18,22 +21,27 @@ namespace BooksStore.App.Client.Controllers
     {
         private readonly CategoryQueryHandler _queryHandler;
         private readonly CategoryCommandHandler _commandHandler;
+        private readonly IUrlHelper _urlHelper;
 
-        public CategoriesController(CategoryQueryHandler queryHandler, CategoryCommandHandler commandHandler)
+        public CategoriesController(
+            CategoryQueryHandler queryHandler, 
+            CategoryCommandHandler commandHandler, 
+            IUrlHelperFactory urlHelperFactory,
+            IActionContextAccessor actionContextAccessor)
         {
             _queryHandler = queryHandler ?? throw new ArgumentNullException(nameof(queryHandler));
             _commandHandler = commandHandler ?? throw new ArgumentNullException(nameof(commandHandler));
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
-        public IActionResult ShowCategories(int page)
+        [HttpGet]
+        [HttpPost]
+        public IActionResult ShowCategories(AdminFilter adminFilter, PageOptions pageOptions)
         {
-            var query = new PageConditionsQuery()
-            {
-                CurrentPage = page == 0 ? 1 : page,
-                PageSize = 20,
-            };
+            var query = new PageConditionsQuery(adminFilter, pageOptions);
 
             var model = _queryHandler.Handle(query);
+            model.ToolbarViewModel.FormUrl = _urlHelper.Action("CreateCategory", "Categories", new { Id = 0 });
             
             return View("CategoriesSection", model);
         }
@@ -56,8 +64,8 @@ namespace BooksStore.App.Client.Controllers
             return _queryHandler.Handle(query);
         }
 
-        [HttpPost("create")]
-        public ActionResult CreateCategory([FromBody] CreateCategoryCommand command)
+        [HttpPost]
+        public IActionResult CreateCategory([FromBody] CreateCategoryCommand command)
         {
             if (!ModelState.IsValid)
             {

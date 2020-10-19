@@ -23,12 +23,14 @@ namespace BooksStore.App.Client.Controllers
         private readonly PublisherQueryHandler _queryHandler;
         private readonly IUrlHelper _urlHelper;
 
-        public PublishersController(PublisherCommandHandler commandHandler, 
-            PublisherQueryHandler queryHandler, IUrlHelperFactory urlHelperFactory,
+        public PublishersController(
+            PublisherCommandHandler commandHandler, 
+            PublisherQueryHandler queryHandler, 
+            IUrlHelperFactory urlHelperFactory,
             IActionContextAccessor actionContextAccessor)
         {
-            _commandHandler = commandHandler;
-            _queryHandler = queryHandler;
+            _commandHandler = commandHandler ?? throw new ArgumentNullException(nameof(commandHandler));
+            _queryHandler = queryHandler ?? throw new ArgumentNullException(nameof(queryHandler));
             _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 

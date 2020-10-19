@@ -5,7 +5,7 @@
 }
 
 <partial name="AdminToolbar" model="@Model.ToolbarViewModel" />
-<partial name="AdminFilter" model="@Model.FilterProps" />
+<partial name="AdminFilter" model="@Model.AdminFilter" />
 <div class="card m-3">
     <div class="card-body">
         <table class="table table-sm table-bordered table-striped">
@@ -21,26 +21,29 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Categories == null)
+                @if (Model.Entities == null)
                 {
                     <tr>
                         <td class="text-center" colspan="4">Получение данных</td>
                     </tr>
  }
-                else if (Model.Categories.Any())
+                else if (Model.Entities.Any())
                 {
-                    @foreach (var category in Model.Categories)
+                    @foreach (var category in Model.Entities)
                     {
                         <tr>
                             <td>
                                 @category.Id
                             </td>
                             <td>@category.DisplayedName</td>
+                            <td>@category.Created.ToShortDateString()</td>
                             <td>
                                 <div class="d-inline-flex">
-                                    <button type="button" class="btn btn-sm btn-warning text-white ml-1">
+                                    <a asp-controller="Categories"
+                                       asp-action="CreateCategory"
+                                       asp-route-Id="@category.Id" class="btn btn-sm btn-warning text-white ml-1">
                                         <i class='fas fa-pencil-alt fa-lg'></i>
-                                    </button>
+                                    </a>
                                     <button type="button" class="btn btn-sm btn-danger ml-1">
                                         <i class='fas fa-trash-alt fa-lg'></i>
                                     </button>
@@ -60,7 +63,8 @@
         <div class="px-3 py-2 bg-light"
              page-model="@Model.Pagination"
              page-action="ShowCategories"
-             page-url-category="@Model.Pagination.CurrentPage"></div>
+             page-url-propertyName="@Model.SortingProperty.PropertyName"
+             page-url-order="@Model.SortingProperty.DisplayedName"></div>
     </div>
 </div>
 

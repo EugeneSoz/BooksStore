@@ -17,14 +17,19 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, IEnumerable<CategoryEntity> categries) GetCategories(string queryConditions)
+        public (int count, IEnumerable<CategoryEntity> categries) GetCategories(string queryConditions, bool isSearchOrFilterUsed)
         {
-            const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
-                                            FROM Categories";
             var sql = $@"SELECT *
                           FROM Categories AS P
                                    LEFT JOIN Categories AS C ON P.Id = C.ParentId AND P.ParentId IS NULL
                          {queryConditions}";
+
+            var rowsCountSql = isSearchOrFilterUsed 
+                ? $@"WITH Entities AS ({sql})
+                     SELECT COUNT(*) AS Count
+                       FROM Entities"
+                : @"SELECT COUNT(*) FROM Categories";
+
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var categoryDictionary = new Dictionary<long, CategoryEntity>();
