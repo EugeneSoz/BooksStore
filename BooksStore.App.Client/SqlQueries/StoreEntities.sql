@@ -19,8 +19,6 @@ BEGIN
         Id                 BIGINT IDENTITY (1, 1)
             CONSTRAINT PK_Categories PRIMARY KEY,
         Name               NVARCHAR(100),
-        ParentId           BIGINT   NULL,
-        ParentAndChildName NVARCHAR(300),
         Created            DATETIME NOT NULL
             CONSTRAINT DFT_Category_created DEFAULT (GETDATE()),
         Updated            DATETIME NULL
@@ -61,11 +59,11 @@ IF OBJECT_ID('dbo.DeleteStoreTables', 'P') IS NOT NULL
 GO
 CREATE PROCEDURE DeleteStoreTables AS
 BEGIN
-    ALTER TABLE dbo.Publishers
-        DROP CONSTRAINT DFT_Publisher_created;
-    ALTER TABLE dbo.Categories
-        DROP CONSTRAINT DFT_Category_created,
-            FK_Categories_Categories_ParentId;
+     ALTER TABLE dbo.Publishers
+         DROP CONSTRAINT DFT_Publisher_created;
+     ALTER TABLE dbo.Categories
+         DROP CONSTRAINT DFT_Category_created;
+
     ALTER TABLE dbo.Books
         DROP CONSTRAINT DFT_year,
             DFT_language,
@@ -124,17 +122,12 @@ BEGIN
     BEGIN TRANSACTION
         WHILE @i <= @categoriesCount
             BEGIN
-                -- создать категорию
-                INSERT INTO Categories (Name)
-                VALUES (CONCAT('Category-', @i));
-                SET @categoryId = SCOPE_IDENTITY();
-
                 DECLARE @j INT = 1;
                 WHILE @j <= @subCategoriesInCategoriesCount
                     BEGIN
                         -- создать подкатегорию
-                        INSERT INTO Categories (Name, ParentId, Created)
-                        VALUES (CONCAT('SubCategory-', @i, '-', @j), @categoryId, DATEADD(day, @j, @baseDate));
+                        INSERT INTO Categories (Name, Created)
+                        VALUES (CONCAT('Category-', @i, '-', @j), DATEADD(day, @j, @baseDate));
                         SET @subCategoryId = SCOPE_IDENTITY();
                         -- создать издательство
                         INSERT INTO Publishers (Name, Country, Created)
@@ -169,7 +162,7 @@ GO
 EXEC DeleteStoreTables;
 GO
 
-EXEC FillStoreEntitiesWithTestData 500;
+EXEC FillStoreEntitiesWithTestData 5000;
 GO
 
 EXEC ClearStoreTables

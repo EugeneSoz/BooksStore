@@ -1,11 +1,12 @@
-﻿namespace BooksStore.Domain.Contracts.Models.Properties
+﻿using System.Collections.Generic;
+
+namespace BooksStore.Domain.Contracts.Models.Properties
 {
     public class Property
     {
-        public Property(string propertyName, string displayedName)
+        protected Property(string propertyName, string displayedName)
         {
-            PropertyName = propertyName;
-            DisplayedName = displayedName;
+            (PropertyName, DisplayedName) = (propertyName, displayedName);
         }
 
         public string PropertyName { get; }

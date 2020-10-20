@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Persistence.Entities;
 using BooksStore.Persistence.Repositories.Providers;
@@ -17,12 +18,10 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, IEnumerable<CategoryEntity> categries) GetCategories(string queryConditions, bool isSearchOrFilterUsed)
+        public (int count, IEnumerable<CategoryEntity> categries) GetCategories(SqlQueryConditions sqlQueryConditions)
         {
-            var sql = $@"SELECT *
-                          FROM Categories AS P
-                                   LEFT JOIN Categories AS C ON P.Id = C.ParentId AND P.ParentId IS NULL
-                         {queryConditions}";
+            var isSearchOrFilterUsed = !string.IsNullOrEmpty(sqlQueryConditions.WhereConditions);
+            var sql = $@"SELECT * FROM Categories{sqlQueryConditions}";
 
             var rowsCountSql = isSearchOrFilterUsed 
                 ? $@"WITH Entities AS ({sql})
@@ -30,28 +29,11 @@ namespace BooksStore.Persistence.Repositories
                        FROM Entities"
                 : @"SELECT COUNT(*) FROM Categories";
 
-            using (var connection = _connectionProvider.OpenConnection())
-            {
-                var categoryDictionary = new Dictionary<long, CategoryEntity>();
-                var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
-                var result = connection.Query<CategoryEntity, CategoryEntity, CategoryEntity>(
-                    sql,
-                    (parent, child) =>
-                    {
-                        if (!categoryDictionary.TryGetValue(parent.Id, out var categoryEntry))
-                        {
-                            categoryEntry = parent;
-                            categoryEntry.ParentAndChildName = child.ParentId == null
-                                ? child.Name
-                                : parent.Name + " <=> " + child.Name;
-                            categoryDictionary.Add(categoryEntry.Id, categoryEntry);
-                        }
+            using var connection = _connectionProvider.OpenConnection();
+            var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
+            var result = connection.Query<CategoryEntity>(sql);
 
-                        return categoryEntry;
-                    }, splitOn: nameof(CategoryEntity.Id));
-
-                return (rowsCount, result);
-            }
+            return (rowsCount, result);
         }
 
         public CategoryEntity GetCategory(long id)
@@ -86,31 +68,12 @@ namespace BooksStore.Persistence.Repositories
 
         public List<CategoryEntity> GetStoreCategories()
         {
-            const string sql = @"SELECT *
-                                   FROM Categories AS P
-                                            INNER JOIN Categories AS C ON P.Id = C.ParentId
-                                  WHERE P.ParentId IS NULL
-                                  ORDER BY P.Name, C.Name";
+            const string sql = @"SELECT * FROM Categories
+                                  ORDER BY Name";
             using (var connection = _connectionProvider.OpenConnection())
             {
-                var categoriesDictionary = new Dictionary<long, CategoryEntity>();
-                var result = connection.Query<CategoryEntity, CategoryEntity, CategoryEntity>(
-                    sql,
-                    (parent, child) =>
-                    {
-                        if (categoriesDictionary.TryGetValue(parent.Id, out var existingEntity))
-                        {
-                            existingEntity.ChildrenCategories.Add(child);
-                        }
-                        else
-                        {
-                            existingEntity = parent;
-                            existingEntity.ChildrenCategories = new List<CategoryEntity>();
-                            categoriesDictionary.Add(existingEntity.Id, existingEntity);
-                        }
-
-                        return existingEntity;
-                    }, splitOn: nameof(CategoryEntity.Id)).Distinct().ToList();
+                var result = connection.Query<CategoryEntity>(
+                    sql).Distinct().ToList();
 
                 return result;
             }
@@ -136,7 +99,6 @@ namespace BooksStore.Persistence.Repositories
                                  VALUES @name, @parentId";
             var parameters = new DynamicParameters();
             parameters.Add("@name", category.Name, DbType.String, ParameterDirection.Input);
-            parameters.Add("@parentId", category.ParentId, DbType.Int64, ParameterDirection.Input);
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var affectedRows = connection.Execute(sql, parameters);
@@ -153,7 +115,6 @@ namespace BooksStore.Persistence.Repositories
                                         Updated  = GETDATE()";
             var parameters = new DynamicParameters();
             parameters.Add("@name", category.Name, DbType.String, ParameterDirection.Input);
-            parameters.Add("@parentId", category.ParentId, DbType.Int64, ParameterDirection.Input);
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var affectedRows = connection.Execute(sql, parameters);

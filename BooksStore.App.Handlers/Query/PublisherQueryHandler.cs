@@ -23,20 +23,20 @@ namespace BooksStore.App.Handlers.Query
         private readonly IPublishersRepository _repository;
         private readonly IPagedListService<PublisherResponse> _pagedListService;
         private readonly IPropertiesService _propertiesService;
-        private readonly IQueryProcessingService _queryProcessingService;
+        private readonly ISqlQueryProcessingService _sqlQueryProcessingService;
         private readonly IMapper _mapper;
 
         public PublisherQueryHandler(
             IPublishersRepository repository, 
             IPagedListService<PublisherResponse> pagedListService, 
             IPropertiesService propertiesService,
-            IQueryProcessingService queryProcessingService,
+            ISqlQueryProcessingService sqlQueryProcessingService,
             IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
             _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
-            _queryProcessingService = queryProcessingService ?? throw new ArgumentNullException(nameof(queryProcessingService));
+            _sqlQueryProcessingService = sqlQueryProcessingService ?? throw new ArgumentNullException(nameof(sqlQueryProcessingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -44,8 +44,8 @@ namespace BooksStore.App.Handlers.Query
         {
             var conditions = _mapper.Map<QueryConditions>(query);
 
-            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
-            var (count, publisherEntities) = _repository.GetPublishers(queryCondition, isSearchOrFilterUsed);
+            var sqlQueryConditions = _sqlQueryProcessingService.GenerateSqlQueryConditions(conditions);
+            var (count, publisherEntities) = _repository.GetPublishers(sqlQueryConditions);
 
             var publishers = publisherEntities
                 .Select(pe => _mapper.Map<PublisherResponse>(pe));
@@ -89,9 +89,9 @@ namespace BooksStore.App.Handlers.Query
 
             var conditions = new QueryConditions();
 
-            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var sqlQueryConditions = _sqlQueryProcessingService.GenerateSqlQueryConditions(conditions);
 
-            var publisherEntities = _repository.GetPublishers(queryCondition, isSearchOrFilterUsed);
+            var publisherEntities = _repository.GetPublishers(sqlQueryConditions);
             var publishers = publisherEntities.publishers
                 .Select(e => e.MapPublisherResponse())
                 .ToList();

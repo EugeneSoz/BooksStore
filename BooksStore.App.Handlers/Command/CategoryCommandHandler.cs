@@ -33,13 +33,8 @@ namespace BooksStore.App.Handlers.Command
         public bool Handle(DeleteCategoryCommand command)
         {
             var category = command.MapCategoryEntity();
-            var hasChildrenBeenDeleted = false;
-            if (category.ParentId == null)
-            {
-                hasChildrenBeenDeleted = _categoriesRepository.DeleteChildrenCategories(category.Id);
-            }
 
-            return hasChildrenBeenDeleted || _categoriesRepository.DeleteCategory(category);
+            return _categoriesRepository.DeleteCategory(category);
         }
     }
 }

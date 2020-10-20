@@ -12,7 +12,7 @@ namespace BooksStore.App.Handlers.Mapping
     {
         public static StoreCategoryResponse MapStoreCategoryResponse(this CategoryEntity categoryEntity)
         {
-            bool hasChildren = categoryEntity.ChildrenCategories.Any();
+            bool hasChildren = false;
             var storeCategory = new StoreCategoryResponse
             {
                 Id = categoryEntity.Id,
@@ -21,26 +21,6 @@ namespace BooksStore.App.Handlers.Mapping
                 IsParent = hasChildren,
                 HasChildren = hasChildren,
             };
-
-            if (hasChildren)
-            {
-                var children = new List<StoreCategoryResponse>();
-                foreach (var child in categoryEntity.ChildrenCategories)
-                {
-                    var storeChildCategory = new StoreCategoryResponse
-                    {
-                        Id = child.Id,
-                        ControlId = $"c_{child.Id}",
-                        ParentId = categoryEntity.Id,
-                        Name = child.Name,
-                        IsParent = false,
-                        HasChildren = false,
-                    };
-
-                    children.Add(storeChildCategory);
-                }
-                storeCategory.Children = children;
-            }
 
             return storeCategory;
         }
@@ -51,18 +31,6 @@ namespace BooksStore.App.Handlers.Mapping
             {
                 Id = categoryEntity.Id,
                 Name = categoryEntity.Name,
-                ParentId = categoryEntity.ParentId,
-                ParentCategory = new Category
-                {
-                    Id = categoryEntity.ParentCategory.Id,
-                    Name = categoryEntity.ParentCategory.Name
-                },
-                ChildrenCategories = categoryEntity.ChildrenCategories.Select(children => new Category
-                {
-                    Id = children.Id,
-                    Name = children.Name,
-                    ParentId = children.ParentId
-                }).ToList(),
                 Books = categoryEntity.Books.Select(b => new RelatedBook
                 {
                     Id = b.Id,
@@ -80,7 +48,6 @@ namespace BooksStore.App.Handlers.Mapping
             {
                 Id = command.Id,
                 Name = command.Name,
-                ParentId = command.ParentId
             };
         }
 
@@ -92,9 +59,6 @@ namespace BooksStore.App.Handlers.Mapping
                 {
                     Id = e.Id,
                     Name = e.Name,
-                    ParentId = e.ParentId,
-                    DisplayedName = e.ParentAndChildName,
-                    ParentCategoryName = e.ParentCategory?.Name
                 }).ToList()
             };
         }
@@ -105,9 +69,6 @@ namespace BooksStore.App.Handlers.Mapping
             {
                 Id = categoryEntity.Id,
                 Name = categoryEntity.Name,
-                ParentId = categoryEntity.ParentId,
-                DisplayedName = categoryEntity.ParentAndChildName,
-                ParentCategoryName = categoryEntity.ParentCategory?.Name
             };
         }
     }

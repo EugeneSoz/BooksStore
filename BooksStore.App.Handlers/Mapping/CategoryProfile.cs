@@ -8,10 +8,7 @@ namespace BooksStore.App.Handlers.Mapping
     {
         public CategoryProfile()
         {
-            CreateMap<CategoryEntity, CategoryResponse>()
-                .ForMember(d => d.DisplayedName,
-                    opts => 
-                        opts.MapFrom(src => src.ParentAndChildName));
+            CreateMap<CategoryEntity, CategoryResponse>();
         }
     }
 }

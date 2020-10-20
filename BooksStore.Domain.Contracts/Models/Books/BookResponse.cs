@@ -1,4 +1,5 @@
-﻿using OnlineBooksStore.Domain.Contracts.Models;
+﻿using System;
+using OnlineBooksStore.Domain.Contracts.Models;
 
 namespace BooksStore.Domain.Contracts.Models.Books
 {
@@ -18,5 +19,7 @@ namespace BooksStore.Domain.Contracts.Models.Books
         public string CategoryName { get; set; }
         public string SubcategoryName { get; set; }
         public string PublisherName { get; set; }
+
+        public DateTime Created { get; set; }
     }
 }

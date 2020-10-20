@@ -6,7 +6,7 @@ namespace BooksStore.Domain.Contracts.Repositories
 {
     public interface ICategoriesRepository
     {
-        (int count, IEnumerable<CategoryEntity> categries) GetCategories(string queryConditions, bool isSearchOrFilterUsed);
+        (int count, IEnumerable<CategoryEntity> categries) GetCategories(SqlQueryConditions sqlQueryConditions);
         CategoryEntity GetCategory(long id);
         List<CategoryEntity> GetStoreCategories();
         List<CategoryEntity> GetParentCategories();

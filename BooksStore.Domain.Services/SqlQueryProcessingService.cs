@@ -4,50 +4,41 @@ using BooksStore.Domain.Contracts.Services;
 
 namespace BooksStore.Domain.Services
 {
-    public class QueryProcessingService : IQueryProcessingService
+    public class SqlQueryProcessingService : ISqlQueryProcessingService
     {
-        public (string conditions, bool isSearchOrFilterUsed) GenerateSqlQueryConditions(QueryConditions queryConditions)
+        public SqlQueryConditions GenerateSqlQueryConditions(QueryConditions queryConditions)
         {
-            var isSearchOrFilterUsed = false;
-            var result = new StringBuilder();
+            var whereConditions = new StringBuilder();
             var searchConditions = GenerateSearchConditions(queryConditions.SearchConditions);
             var filterConditions = GenerateFilterConditions(queryConditions.FilterConditions);
             var orderConditions = GenerateOrderConditions(queryConditions.OrderConditions);
             var rowsFetchConditions =
                 GenerateRowsFetchConditions(queryConditions.CurrentPage, queryConditions.PageSize);
 
+            var result = new SqlQueryConditions();
             if (!string.IsNullOrEmpty(searchConditions) || !string.IsNullOrEmpty(filterConditions))
             {
-                result.Append(" WHERE");
+                whereConditions.Append(" WHERE");
             }
 
             if (!string.IsNullOrEmpty(searchConditions))
             {
-                isSearchOrFilterUsed = true;
-                result.Append(" ");
-                result.AppendLine(searchConditions);
+                whereConditions.Append(" ");
+                whereConditions.AppendLine(searchConditions);
             }
 
             if (!string.IsNullOrEmpty(filterConditions))
             {
-                isSearchOrFilterUsed = true;
-                result.Append(" ");
-                result.AppendLine(filterConditions);
+                var symbols = !string.IsNullOrEmpty(searchConditions) ? " AND " : " ";
+                whereConditions.Append(symbols);
+                whereConditions.AppendLine(filterConditions);
             }
 
-            if (!string.IsNullOrEmpty(orderConditions))
-            {
-                result.Append(" ");
-                result.AppendLine(orderConditions);
-            }
+            result.WhereConditions = whereConditions.ToString();
+            result.OrderConditions = orderConditions;
+            result.FetchConditions = rowsFetchConditions;
 
-            if (!string.IsNullOrEmpty(rowsFetchConditions))
-            {
-                result.Append(" ");
-                result.AppendLine(rowsFetchConditions);
-            }
-
-            return (result.ToString(), isSearchOrFilterUsed);
+            return result;
         }
 
         private string GenerateSearchConditions(Condition[] conditions)
@@ -66,7 +57,7 @@ namespace BooksStore.Domain.Services
                     result.Append(" OR ");
                 }
 
-                result.Append($"{conditions[i].PropertyName} LIKE '%{conditions[i].PropertyValue}%'");
+                result.Append($"{conditions[i].Alias}{conditions[i].PropertyName} LIKE '%{conditions[i].PropertyValue}%'");
             }
 
             return result.ToString();
@@ -91,11 +82,11 @@ namespace BooksStore.Domain.Services
 
                 if (i == 0)
                 {
-                    result.Append($"{conditions[i].PropertyName} >= '{conditions[i].PropertyValue}'");
+                    result.Append($"{conditions[i].Alias}{conditions[i].PropertyName} >= '{conditions[i].PropertyValue}'");
                 }
                 else if (i == 1)
                 {
-                    result.Append($"{conditions[i].PropertyName} <= '{conditions[i].PropertyValue}'");
+                    result.Append($"{conditions[i].Alias}{conditions[i].PropertyName} <= '{conditions[i].PropertyValue}'");
                 }
             }
 
@@ -109,7 +100,7 @@ namespace BooksStore.Domain.Services
                 return string.Empty;
             }
 
-            var result = new StringBuilder("ORDER BY ");
+            var result = new StringBuilder("\n ORDER BY ");
 
             for (int i = 0; i < conditions.Length; i++)
             {
@@ -118,7 +109,7 @@ namespace BooksStore.Domain.Services
                     result.Append(", ");
                 }
 
-                result.Append($"{conditions[i].PropertyName} {conditions[i].PropertyValue}");
+                result.Append($"{conditions[i].Alias}{conditions[i].PropertyName} {conditions[i].PropertyValue}");
             }
 
             return result.ToString();
@@ -131,7 +122,7 @@ namespace BooksStore.Domain.Services
                 return string.Empty;
             }
 
-            var result = $"OFFSET {(currentPage - 1) * pageSize} ROWS FETCH NEXT {pageSize} ROWS ONLY";
+            var result = $"\n OFFSET {(currentPage - 1) * pageSize} ROWS FETCH NEXT {pageSize} ROWS ONLY";
 
             return result;
         }

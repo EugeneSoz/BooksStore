@@ -74,7 +74,7 @@ namespace BooksStore.Domain.Contracts.Models.Pages
         {
             switch (valueToChange)
             {
-                case nameof(CategoryResponse.ParentCategoryName):
+                case nameof(CategoryResponse.Name):
                     return $"{nameof(Category.ParentCategory)}.{nameof(Category.Name)}";
                 case nameof(BookResponse.PublisherName):
                     return $"{nameof(Publisher)}.{nameof(Publisher.Name)}";

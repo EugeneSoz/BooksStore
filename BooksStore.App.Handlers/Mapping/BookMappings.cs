@@ -24,9 +24,7 @@ namespace BooksStore.App.Handlers.Mapping
                 PageCount = bookEntity.PageCount,
                 PurchasePrice = bookEntity.PurchasePrice,
                 RetailPrice = bookEntity.RetailPrice,
-                CategoryName = bookEntity.Category.ParentCategory == null
-                    ? string.Empty
-                    : bookEntity.Category.ParentCategory.Name,
+                CategoryName = bookEntity.Category.Name,
                 SubcategoryName = bookEntity.Category.Name,
                 PublisherName = bookEntity.Publisher.Name
             };

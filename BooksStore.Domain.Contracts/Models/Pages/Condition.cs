@@ -1,4 +1,6 @@
-﻿namespace BooksStore.Domain.Contracts.Models.Pages
+﻿using System;
+
+namespace BooksStore.Domain.Contracts.Models.Pages
 {
     /// <summary>
     /// Класс для хранения информации об описании условий sql запроса
@@ -9,6 +11,7 @@
         {
             PropertyName = propertyName;
             PropertyValue = propertyValue;
+            Alias = string.Empty;
         }
 
         /// <summary>
@@ -17,7 +20,7 @@
         /// <value>
         /// Имя свойства.
         /// </value>
-        public string PropertyName { get; }
+        public string PropertyName { get; set; }
         /// <summary>
         /// Значение свойства.
         /// </summary>
@@ -25,5 +28,12 @@
         /// Значение свойства.
         /// </value>
         public string PropertyValue { get; }
+        /// <summary>
+        /// Псевдоним для свойства (C.Name, например).
+        /// </summary>
+        /// <value>
+        /// Псевдоним для свойства.
+        /// </value>
+        public string Alias { get; set; }
     }
 }

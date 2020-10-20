@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Persistence.Entities;
 using BooksStore.Persistence.Repositories.Providers;
@@ -17,11 +18,10 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, IEnumerable<PublisherEntity> publishers) GetPublishers(string queryConditions,
-            bool isSearchOrFilterUsed)
+        public (int count, IEnumerable<PublisherEntity> publishers) GetPublishers(SqlQueryConditions sqlQueryConditions)
         {
-            var sql = $@"SELECT *
-                           FROM Publishers{queryConditions}";
+            var isSearchOrFilterUsed = !string.IsNullOrEmpty(sqlQueryConditions.WhereConditions);
+            var sql = $@"SELECT * FROM Publishers{sqlQueryConditions}";
 
             var rowsCountSql = isSearchOrFilterUsed 
                 ? $@"WITH Entities AS ({sql})
@@ -29,13 +29,11 @@ namespace BooksStore.Persistence.Repositories
                        FROM Entities"
                 : @"SELECT COUNT(*) FROM Publishers";
 
-            using (var connection = _connectionProvider.OpenConnection())
-            {
-                var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
-                var publishers = connection.Query<PublisherEntity>(sql);
+            using var connection = _connectionProvider.OpenConnection();
+            var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
+            var publishers = connection.Query<PublisherEntity>(sql);
 
-                return (rowsCount, publishers);
-            }
+            return (rowsCount, publishers);
         }
 
         public PublisherEntity GetPublisher(long id)

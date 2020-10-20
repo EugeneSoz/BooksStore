@@ -20,18 +20,18 @@ namespace BooksStore.App.Handlers.Query
         private readonly IBooksRepository _booksRepository;
         private readonly IPagedListService<BookResponse> _pagedListService;
         private readonly IPropertiesService _propertiesService;
-        private readonly IQueryProcessingService _queryProcessingService;
+        private readonly ISqlQueryProcessingService _sqlQueryProcessingService;
 
         public BookQueryHandler(
             IBooksRepository booksRepository, 
             IPagedListService<BookResponse> pagedListService, 
             IPropertiesService propertiesService,
-            IQueryProcessingService queryProcessingService)
+            ISqlQueryProcessingService sqlQueryProcessingService)
         {
             _booksRepository = booksRepository ?? throw new ArgumentNullException(nameof(booksRepository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
             _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
-            _queryProcessingService = queryProcessingService ?? throw new ArgumentNullException(nameof(queryProcessingService));
+            _sqlQueryProcessingService = sqlQueryProcessingService ?? throw new ArgumentNullException(nameof(sqlQueryProcessingService));
         }
 
         public StoreBooksViewModel Handle(StorePageFilterQuery query)
@@ -68,8 +68,8 @@ namespace BooksStore.App.Handlers.Query
                 PageSize = query.PageSize
             };
 
-            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
-            var bookEntities = _booksRepository.GetBooks(queryCondition);
+            var sqlQueryConditions = _sqlQueryProcessingService.GenerateSqlQueryConditions(conditions);
+            var bookEntities = _booksRepository.GetBooks(sqlQueryConditions);
             var books = bookEntities.books
                 .Select(b => b.MapBookResponse())
                 .ToList();
@@ -86,9 +86,9 @@ namespace BooksStore.App.Handlers.Query
                 CurrentPage = query.CurrentPage,
                 PageSize = query.PageSize
             };
-            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var sqlQueryConditions = _sqlQueryProcessingService.GenerateSqlQueryConditions(conditions);
             var options = query.MapToPageOptions();
-            var bookEntities = _booksRepository.GetBooks(queryCondition);
+            var bookEntities = _booksRepository.GetBooks(sqlQueryConditions);
             var books = bookEntities.books
                 .Select(b => b.MapBookResponse())
                 .ToList();

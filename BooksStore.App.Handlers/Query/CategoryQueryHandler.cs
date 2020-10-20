@@ -25,20 +25,20 @@ namespace BooksStore.App.Handlers.Query
         private readonly ICategoriesRepository _categoriesRepository;
         private readonly IPagedListService<CategoryResponse> _pagedListService;
         private readonly IPropertiesService _propertiesService;
-        private readonly IQueryProcessingService _queryProcessingService;
+        private readonly ISqlQueryProcessingService _sqlQueryProcessingService;
         private readonly IMapper _mapper;
 
         public CategoryQueryHandler(
             ICategoriesRepository categoriesRepository, 
             IPagedListService<CategoryResponse> pagedListService, 
             IPropertiesService propertiesService,
-            IQueryProcessingService queryProcessingService,
+            ISqlQueryProcessingService sqlQueryProcessingService,
             IMapper mapper)
         {
             _categoriesRepository = categoriesRepository ?? throw new ArgumentNullException(nameof(categoriesRepository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
             _propertiesService = propertiesService ?? throw new ArgumentNullException(nameof(propertiesService));
-            _queryProcessingService = queryProcessingService ?? throw new ArgumentNullException(nameof(queryProcessingService));
+            _sqlQueryProcessingService = sqlQueryProcessingService ?? throw new ArgumentNullException(nameof(sqlQueryProcessingService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -46,8 +46,8 @@ namespace BooksStore.App.Handlers.Query
         {
             var conditions = _mapper.Map<QueryConditions>(query);
 
-            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
-            var (count, categoryEntities) = _categoriesRepository.GetCategories(queryCondition, isSearchOrFilterUsed);
+            var sqlQueryConditions = _sqlQueryProcessingService.GenerateSqlQueryConditions(conditions);
+            var (count, categoryEntities) = _categoriesRepository.GetCategories(sqlQueryConditions);
 
             var categories = categoryEntities
                 .Select(ce => _mapper.Map<CategoryResponse>(ce));
@@ -106,8 +106,8 @@ namespace BooksStore.App.Handlers.Query
 
             var conditions = new QueryConditions();
 
-            var (queryCondition, isSearchOrFilterUsed) = _queryProcessingService.GenerateSqlQueryConditions(conditions);
-            var categoryEntities = _categoriesRepository.GetCategories(queryCondition, isSearchOrFilterUsed);
+            var sqlQueryConditions = _sqlQueryProcessingService.GenerateSqlQueryConditions(conditions);
+            var categoryEntities = _categoriesRepository.GetCategories(sqlQueryConditions);
             var categories = categoryEntities.categries
                 .Select(ce => ce.MapCategoryResponse())
                 .ToList();

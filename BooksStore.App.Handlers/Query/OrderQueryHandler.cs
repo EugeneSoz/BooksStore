@@ -18,16 +18,16 @@ namespace BooksStore.App.Handlers.Query
     {
         private readonly IOrdersRepository _ordersRepository;
         private readonly IPagedListService<Order> _pagedListService;
-        private readonly IQueryProcessingService _queryProcessingService;
+        private readonly ISqlQueryProcessingService _sqlQueryProcessingService;
 
         public OrderQueryHandler(
             IOrdersRepository ordersRepository, 
             IPagedListService<Order> pagedListService,
-            IQueryProcessingService queryProcessingService)
+            ISqlQueryProcessingService sqlQueryProcessingService)
         {
             _ordersRepository = ordersRepository ?? throw new ArgumentNullException(nameof(ordersRepository));
             _pagedListService = pagedListService ?? throw new ArgumentNullException(nameof(pagedListService));
-            _queryProcessingService = queryProcessingService ?? throw new ArgumentNullException(nameof(queryProcessingService));
+            _sqlQueryProcessingService = sqlQueryProcessingService ?? throw new ArgumentNullException(nameof(sqlQueryProcessingService));
         }
 
         public Order Handle(OrderQuery query)
@@ -48,7 +48,7 @@ namespace BooksStore.App.Handlers.Query
                 PageSize = query.PageSize
             };
 
-            var queryCondition = _queryProcessingService.GenerateSqlQueryConditions(conditions);
+            var queryCondition = _sqlQueryProcessingService.GenerateSqlQueryConditions(conditions);
             var options = query.MapToPageOptions();
             var orderEntities = _ordersRepository.GetOrders(options);
             var orders = orderEntities.orders.Select(o => o.MapToOrder()).ToList();

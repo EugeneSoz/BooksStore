@@ -6,7 +6,7 @@ namespace BooksStore.Domain.Contracts.Repositories
 {
     public interface IPublishersRepository
     {
-        (int count, IEnumerable<PublisherEntity> publishers) GetPublishers(string queryConditions, bool isSearchOrFilterUsed);
+        (int count, IEnumerable<PublisherEntity> publishers) GetPublishers(SqlQueryConditions sqlQueryConditions);
         PublisherEntity GetPublisher(long id);
         PublisherEntity AddPublisher(PublisherEntity publisher);
         bool UpdatePublisher(PublisherEntity publisher);

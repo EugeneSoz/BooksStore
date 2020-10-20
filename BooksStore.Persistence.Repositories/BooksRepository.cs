@@ -18,7 +18,7 @@ namespace BooksStore.Persistence.Repositories
             _connectionProvider = connectionProvider;
         }
 
-        public (int count, IEnumerable<BookEntity> books) GetBooks(string queryConditions)
+        public (int count, IEnumerable<BookEntity> books) GetBooks(SqlQueryConditions sqlQueryConditions)
         {
             const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
                                             FROM Books";
@@ -27,7 +27,9 @@ namespace BooksStore.Persistence.Repositories
                                   FROM Books AS B
                                            INNER JOIN Categories AS C ON B.CategoryId = C.Id
                                            INNER JOIN Categories AS Parent ON Parent.Id = C.ParentId
-                                           INNER JOIN Publishers AS P ON B.PublisherId = P.Id {queryConditions}";
+                                           INNER JOIN Publishers AS P ON B.PublisherId = P.Id {sqlQueryConditions.WhereConditions}
+                           {sqlQueryConditions.OrderConditions}
+                           {sqlQueryConditions.FetchConditions}";
             using (var connection = _connectionProvider.OpenConnection())
             {
                 var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
@@ -36,7 +38,6 @@ namespace BooksStore.Persistence.Repositories
                     (book, category, parent, publisher) =>
                     {
                         book.Category = category;
-                        book.Category.ParentCategory = parent;
                         book.Publisher = publisher;
 
                         return book;

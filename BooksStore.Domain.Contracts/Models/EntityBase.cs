@@ -1,4 +1,6 @@
-﻿namespace BooksStore.Domain.Contracts.Models
+﻿using System;
+
+namespace BooksStore.Domain.Contracts.Models
 {
     /// <summary>
     /// Base entity class with the identifier
@@ -12,5 +14,6 @@
         /// The identifier.
         /// </value>
         public long Id { get; set; }
+        public string DisplayedName { get; set; }
     }
 }
