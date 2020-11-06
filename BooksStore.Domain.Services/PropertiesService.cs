@@ -30,15 +30,16 @@ namespace BooksStore.Domain.Services
             };
         }
 
-        public List<FilterSortingProps> GetBookFilterProps()
+        public List<FilterProperty> GetBookFilterProps()
         {
-            return new List<FilterSortingProps>
+            return new List<FilterProperty>
             {
-                new FilterSortingProps(nameof(BookResponse.Title), "Название"),
-                new FilterSortingProps(nameof(BookResponse.CategoryName), "Категория"),
-                new FilterSortingProps(nameof(BookResponse.SubcategoryName), "Подкатегория"),
-                new FilterSortingProps(nameof(BookResponse.PublisherName), "Издательство"),
-                new FilterSortingProps(nameof(BookResponse.RetailPrice), "Цена")
+                new FilterProperty(nameof(BookResponse.Title), "Название", true),
+                new FilterProperty(nameof(BookResponse.CategoryName), "Категория", false),
+                new FilterProperty(nameof(BookResponse.PublisherName), "Издательство", false),
+                new FilterProperty(nameof(BookResponse.PurchasePrice), "Цена закупки", false),
+                new FilterProperty(nameof(BookResponse.RetailPrice), "Цена продажи", false),
+                new FilterProperty(nameof(BookResponse.Created), "Дата создания книги", false)
             };
         }
 
@@ -93,17 +94,33 @@ namespace BooksStore.Domain.Services
             return props;
         }
 
-        public List<SortingProperty> GetBooksSortingProps()
+        public List<SortingProperty> GetBooksSortingProps(QueryConditions queryConditions)
         {
-            return new List<SortingProperty>
+            var props = new List<SortingProperty>
             {
                 new SortingProperty(nameof(BookResponse.Id), "ID"),
                 new SortingProperty(nameof(BookResponse.Title), "Название"),
                 new SortingProperty(nameof(BookResponse.CategoryName), "Категория"),
-                new SortingProperty(nameof(BookResponse.SubcategoryName), "Подкатегория"),
                 new SortingProperty(nameof(BookResponse.PublisherName), "Издательство"),
-                new SortingProperty(nameof(BookResponse.RetailPrice), "Цена")
+                new SortingProperty(nameof(BookResponse.PurchasePrice), "Цена закупки"),
+                new SortingProperty(nameof(BookResponse.RetailPrice), "Цена продажи"),
+                new SortingProperty(nameof(BookResponse.Created), "Дата создания книги"),
             };
+
+            foreach (var property in props)
+            {
+                var order = nameof(SortingOrder.Asc);
+
+                if (property.PropertyName == queryConditions.OrderConditions[0].PropertyName)
+                {
+                    property.DescendingOrder = queryConditions.OrderConditions[0].PropertyValue == "DESC";
+                    order = property.DescendingOrder == true ? nameof(SortingOrder.Asc) : nameof(SortingOrder.Desc);
+                }
+
+                property.UrlLink = $"/Books/Page{queryConditions.CurrentPage}/{property.PropertyName}/{order.ToUpper()}";
+            }
+
+            return props;
         }
 
         public List<ListItem> GetSortingProperties()

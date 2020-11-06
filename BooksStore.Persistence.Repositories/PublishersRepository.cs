@@ -27,7 +27,7 @@ namespace BooksStore.Persistence.Repositories
                 ? $@"WITH Entities AS ({sql})
                      SELECT COUNT(*) AS Count
                        FROM Entities"
-                : @"SELECT COUNT(*) FROM Publishers";
+                : @"SELECT COUNT(*) AS Count FROM Publishers";
 
             using var connection = _connectionProvider.OpenConnection();
             var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);

@@ -5,7 +5,7 @@
 }
 
 <partial name="AdminToolbar" model="@Model.ToolbarViewModel" />
-<partial name="AdminFilter" model="@Model.FilterProps" />
+<partial name="AdminFilter" model="@Model.AdminFilter" />
 <div class="card m-3">
     <div class="card-body">
         <table class="table table-sm table-bordered table-striped">
@@ -21,15 +21,15 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.Books == null)
+                @if (Model.Entities == null)
                 {
                     <tr>
                         <td class="text-center" colspan="4">Получение данных</td>
                     </tr>
                 }
-                else if (Model.Books.Any())
+                else if (Model.Entities.Any())
                 {
-                    @foreach (var book in Model.Books)
+                    @foreach (var book in Model.Entities)
                     {
                         <tr>
                             <td>
@@ -37,14 +37,17 @@
                             </td>
                             <td>@book.Title</td>
                             <td>@book.CategoryName</td>
-                            <td>@book.SubcategoryName</td>
                             <td>@book.PublisherName</td>
+                            <td class="text-right">@book.PurchasePrice</td>
                             <td class="text-right">@book.RetailPrice</td>
+                            <td>@book.Created.ToShortDateString()</td>
                             <td>
                                 <div class="d-inline-flex">
-                                    <button type="button" class="btn btn-sm btn-warning text-white ml-1">
+                                    <a asp-controller="Books"
+                                       asp-action="CreateBook"
+                                       asp-route-Id="@book.Id" class="btn btn-sm btn-warning text-white ml-1">
                                         <i class='fas fa-pencil-alt fa-lg'></i>
-                                    </button>
+                                    </a>
                                     <button type="button" class="btn btn-sm btn-danger ml-1">
                                         <i class='fas fa-trash-alt fa-lg'></i>
                                     </button>
@@ -65,7 +68,8 @@
         <div class="px-3 py-2 bg-light"
              page-model="@Model.Pagination"
              page-action="ShowBooks"
-             page-url-category="@Model.Pagination.CurrentPage"></div>
+             page-url-propertyName="@Model.SortingProperty.PropertyName"
+             page-url-order="@Model.SortingProperty.DisplayedName"></div>
     </div>
 </div>
 

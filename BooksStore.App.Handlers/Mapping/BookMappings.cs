@@ -25,7 +25,6 @@ namespace BooksStore.App.Handlers.Mapping
                 PurchasePrice = bookEntity.PurchasePrice,
                 RetailPrice = bookEntity.RetailPrice,
                 CategoryName = bookEntity.Category.Name,
-                SubcategoryName = bookEntity.Category.Name,
                 PublisherName = bookEntity.Publisher.Name
             };
         }

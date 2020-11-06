@@ -8,6 +8,7 @@ namespace BooksStore.App.Client.Infrastructure
     {
         internal static IServiceCollection AddCommandsAndQueries(this IServiceCollection services)
         {
+            services.AddTransient<StoreBookQueryHandler>();
             services.AddTransient<BookQueryHandler>();
             services.AddTransient<CategoryQueryHandler>();
             services.AddTransient<PublisherQueryHandler>();

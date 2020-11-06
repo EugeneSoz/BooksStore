@@ -10,10 +10,10 @@ namespace BooksStore.Domain.Contracts.Services
     {
         List<FilterProperty> GetPublisherFilterProps();
         List<FilterProperty> GetCategoryFilterProps();
-        List<FilterSortingProps> GetBookFilterProps();
+        List<FilterProperty> GetBookFilterProps();
         List<SortingProperty> GetPublisherSortingProps(QueryConditions queryConditions);
         List<SortingProperty> GetCategorySortingProps(QueryConditions queryConditions);
-        List<SortingProperty> GetBooksSortingProps();
+        List<SortingProperty> GetBooksSortingProps(QueryConditions queryConditions);
         List<ListItem> GetSortingProperties();
         List<ListItem> GetGridSizeProperties();
     }

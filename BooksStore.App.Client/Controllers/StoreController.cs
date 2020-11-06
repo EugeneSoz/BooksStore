@@ -1,7 +1,9 @@
 ﻿using System;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Query;
+using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Books;
+using BooksStore.Domain.Contracts.Models.Pages;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -10,23 +12,18 @@ namespace BooksStore.App.Client.Controllers
 {
     public class StoreController : Controller
     {
-        private readonly BookQueryHandler _bookQueryHandler;
+        private readonly StoreBookQueryHandler _bookQueryHandler;
 
-        public StoreController(BookQueryHandler bookQueryHandler)
+        public StoreController(StoreBookQueryHandler bookQueryHandler)
         {
             _bookQueryHandler = bookQueryHandler ?? throw new ArgumentNullException(nameof(bookQueryHandler));
         }
 
         [HttpGet]
-        public IActionResult ShowBooks(int page, string category)
+        [HttpPost]
+        public IActionResult ShowBooks(AdminFilter adminFilter, PageOptions pageOptions)
         {
-            var query = new StorePageFilterQuery()
-            {
-                CurrentPage = page == 0 ? 1 : page,
-                PageSize = 20,
-                FilterPropertyName = string.IsNullOrEmpty(category) ? null : nameof(BookResponse.CategoryId),
-                FilterPropertyValue = string.IsNullOrEmpty(category) ? 0 : long.Parse(category)
-            };
+            var query = new PageConditionsQuery(adminFilter, pageOptions);
 
             var result = _bookQueryHandler.Handle(query);
             

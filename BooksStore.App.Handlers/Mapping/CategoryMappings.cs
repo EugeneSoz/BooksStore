@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using BooksStore.App.Contracts.Command;
 using BooksStore.Domain.Contracts.Models.Books;
 using BooksStore.Domain.Contracts.Models.Categories;
@@ -48,18 +47,6 @@ namespace BooksStore.App.Handlers.Mapping
             {
                 Id = command.Id,
                 Name = command.Name,
-            };
-        }
-
-        public static PagedList<CategoryResponse> MapCategoryResponsePagedList(this PagedList<CategoryEntity> pagedList)
-        {
-            return new PagedList<CategoryResponse>()
-            {
-                Entities = pagedList.Entities.Select(e => new CategoryResponse
-                {
-                    Id = e.Id,
-                    Name = e.Name,
-                }).ToList()
             };
         }
 

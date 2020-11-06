@@ -1,5 +1,4 @@
-﻿using System;
-using BooksStore.Domain.Contracts.Models.Pages;
+﻿using BooksStore.Domain.Contracts.Models.Pages;
 
 namespace BooksStore.Domain.Contracts.Services
 {

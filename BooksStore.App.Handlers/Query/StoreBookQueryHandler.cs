@@ -1,12 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using BooksStore.App.Contracts.Query;
-using BooksStore.App.Handlers.Mapping;
-using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Books;
 using BooksStore.Domain.Contracts.Models.Pages;
-using BooksStore.Domain.Contracts.Models.Properties;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Domain.Contracts.Services;
 using BooksStore.Domain.Contracts.ViewModels;
@@ -14,9 +12,7 @@ using OnlineBooksStore.App.Handlers.Interfaces;
 
 namespace BooksStore.App.Handlers.Query
 {
-    public class BookQueryHandler : 
-        IQueryHandler<PageConditionsQuery, BooksViewModel>,
-        IQueryHandler<BookIdQuery, BookResponse>
+    public class StoreBookQueryHandler : IQueryHandler<PageConditionsQuery, StoreBooksViewModel>
     {
         private readonly IBooksRepository _booksRepository;
         private readonly IPagedListService<BookResponse> _pagedListService;
@@ -24,7 +20,7 @@ namespace BooksStore.App.Handlers.Query
         private readonly IBookSqlQueryProcessingService _sqlQueryProcessingService;
         private readonly IMapper _mapper;
 
-        public BookQueryHandler(
+        public StoreBookQueryHandler(
             IBooksRepository booksRepository, 
             IPagedListService<BookResponse> pagedListService, 
             IPropertiesService propertiesService,
@@ -38,7 +34,7 @@ namespace BooksStore.App.Handlers.Query
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public BooksViewModel Handle(PageConditionsQuery query)
+        public StoreBooksViewModel Handle(PageConditionsQuery query)
         {
             var conditions = _mapper.Map<QueryConditions>(query);
 
@@ -48,30 +44,23 @@ namespace BooksStore.App.Handlers.Query
             var categories = bookEntities
                 .Select(be => _mapper.Map<BookResponse>(be));
 
-            var result = _pagedListService.CreatePagedList(categories, count, conditions);
+            var response = _pagedListService.CreatePagedList(categories, count, conditions);
 
-            var viewModel = new BooksViewModel
+            var displayedBooksCount = response?.Entities?.Count ?? 0;
+            var booksGrid = CreateBooksGrid(response?.Entities ?? new List<BookResponse>(), 4, displayedBooksCount);
+
+            var result = new StoreBooksViewModel
             {
-                Entities = result.Entities,
-                Pagination = result.Pagination,
-                ToolbarViewModel = new AdminToolbarViewModel
+                Books = booksGrid,
+                Pagination = response?.Pagination,
+                ToolbarViewModel = new ToolbarViewModel
                 {
-                    FormUrl = string.Empty,
-                    IsFormButtonVisible = true
-                },
-                AdminFilter = new AdminFilter
-                {
-                    FilterProperties = _propertiesService.GetBookFilterProps(),
-                    SelectedProperty = conditions.FilterConditions != null ? conditions.FilterConditions[0].PropertyName : string.Empty,
-                    SearchValue = string.Empty,
-                    Controller = "Books",
-                    Action = "ShowBooks"
-                },
-                TableHeaders = _propertiesService.GetBooksSortingProps(conditions),
-                SortingProperty = new SortingProperty(conditions.OrderConditions[0].PropertyName, 
-                    conditions.OrderConditions[0].PropertyValue)
+                    SortingProperties = _propertiesService.GetGridSizeProperties(),
+                    GridSizeProperties = _propertiesService.GetSortingProperties()
+                }
             };
-            return viewModel;
+
+            return result;
         }
 
         public BookResponse Handle(BookIdQuery query)
@@ -80,6 +69,38 @@ namespace BooksStore.App.Handlers.Query
             var book = _mapper.Map<BookResponse>(bookEntity);
 
             return book;
+        }
+
+        private Dictionary<int, List<BookResponse>> CreateBooksGrid(List<BookResponse> books, int cardsInRow, int displayedBooksCount)
+        {
+            var booksGrid = new Dictionary<int, List<BookResponse>>();
+            var rowsCount = Math.Ceiling(displayedBooksCount / (double)cardsInRow);
+            for (int row = 0; row < rowsCount; row++)
+            {
+                booksGrid.Add(row, new List<BookResponse>());
+                for (int col = 0; col < cardsInRow; col++)
+                {
+                    if (IsColEmpty(row, col, displayedBooksCount))
+                    {
+                        booksGrid[row].Add(null);
+                    }
+                    else
+                    {
+                        var index = GetBookIndex(row, col);
+                        booksGrid[row].Add(books[index]);
+                    }
+                }
+            }
+
+            return booksGrid;
+        }
+
+        private int GetBookIndex(int row, int column) {
+            return 4 * row + column;
+        }
+
+        private bool IsColEmpty(int row, int column, int displayedBooksCount) {
+            return GetBookIndex(row, column) >= displayedBooksCount;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace BooksStore.App.Client.Infrastructure
             services.AddTransient<ICartService, CartService>();
             services.AddTransient<IPropertiesService, PropertiesService>();
             services.AddTransient<ISqlQueryProcessingService, SqlQueryProcessingService>();
+            services.AddTransient<IBookSqlQueryProcessingService, BookSqlQueryProcessingService>();
 
             return services;
         }

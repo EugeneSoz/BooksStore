@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Command;
 using BooksStore.App.Handlers.Query;
+using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Books;
+using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Persistence.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Routing;
 using OnlineBooksStore.App.Contracts.Command;
 
 namespace BooksStore.App.Client.Controllers
@@ -17,23 +21,28 @@ namespace BooksStore.App.Client.Controllers
     {
         private readonly BookQueryHandler _queryHandler;
         private readonly BookCommandHandler _commandHandler;
+        private readonly IUrlHelper _urlHelper;
 
-        public BooksController(BookQueryHandler queryHandler, BookCommandHandler commandHandler)
+        public BooksController(
+            BookQueryHandler queryHandler, 
+            BookCommandHandler commandHandler, 
+            IUrlHelperFactory urlHelperFactory,
+            IActionContextAccessor actionContextAccessor)
         {
             _queryHandler = queryHandler ?? throw new ArgumentNullException(nameof(queryHandler));
             _commandHandler = commandHandler ?? throw new ArgumentNullException(nameof(commandHandler));
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
         }
 
-        public IActionResult ShowBooks(int page)
+        [HttpGet]
+        [HttpPost]
+        public IActionResult ShowBooks(AdminFilter adminFilter, PageOptions pageOptions)
         {
-            var query = new PageFilterQuery()
-            {
-                CurrentPage = page == 0 ? 1 : page,
-                PageSize = 20,
-            };
+            var query = new PageConditionsQuery(adminFilter, pageOptions);
 
             var model = _queryHandler.Handle(query);
-            
+            model.ToolbarViewModel.FormUrl = _urlHelper.Action("CreateBook", "Books", new { Id = 0 });
+
             return View("BooksSection", model);
         }
 

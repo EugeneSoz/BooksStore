@@ -78,8 +78,6 @@ namespace BooksStore.Domain.Contracts.Models.Pages
                     return $"{nameof(Category.ParentCategory)}.{nameof(Category.Name)}";
                 case nameof(BookResponse.PublisherName):
                     return $"{nameof(Publisher)}.{nameof(Publisher.Name)}";
-                case nameof(BookResponse.SubcategoryName):
-                    return $"{nameof(Category)}.{nameof(Category.Name)}";
                 case nameof(BookResponse.CategoryName):
                     return $"{nameof(Category)}.{nameof(Category.ParentCategory)}.{nameof(Category.Name)}";
                 default:
@@ -91,8 +89,6 @@ namespace BooksStore.Domain.Contracts.Models.Pages
         {
             switch (valueToChange)
             {
-                case nameof(BookResponse.SubcategoryName):
-                    return $"{nameof(Category)}.{nameof(Category.Id)}";
                 case nameof(BookResponse.CategoryName):
                     return $"{nameof(Category)}.{nameof(Category.ParentCategory)}.{nameof(Category.Id)}";
                 default:

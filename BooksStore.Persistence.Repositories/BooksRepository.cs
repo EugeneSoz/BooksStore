@@ -20,31 +20,35 @@ namespace BooksStore.Persistence.Repositories
 
         public (int count, IEnumerable<BookEntity> books) GetBooks(SqlQueryConditions sqlQueryConditions)
         {
-            const string rowsCountSql = @"SELECT COUNT(*) AS [Count]
-                                            FROM Books";
-
-            var sql = $@"SELECT B.*, C.*, Parent.*, P.*
+            var isSearchOrFilterUsed = !string.IsNullOrEmpty(sqlQueryConditions.WhereConditions);
+            var sql = $@"SELECT B.*, C.*, P.*
                                   FROM Books AS B
                                            INNER JOIN Categories AS C ON B.CategoryId = C.Id
-                                           INNER JOIN Categories AS Parent ON Parent.Id = C.ParentId
-                                           INNER JOIN Publishers AS P ON B.PublisherId = P.Id {sqlQueryConditions.WhereConditions}
-                           {sqlQueryConditions.OrderConditions}
-                           {sqlQueryConditions.FetchConditions}";
-            using (var connection = _connectionProvider.OpenConnection())
-            {
-                var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
-                var result = connection.Query<BookEntity, CategoryEntity, CategoryEntity, PublisherEntity, BookEntity>(
-                    sql,
-                    (book, category, parent, publisher) =>
-                    {
-                        book.Category = category;
-                        book.Publisher = publisher;
+                                           INNER JOIN Publishers AS P ON B.PublisherId = P.Id{sqlQueryConditions}";
 
-                        return book;
-                    }, splitOn: nameof(BookEntity.Id));
+            var rowsCountSql = isSearchOrFilterUsed 
+                ? $@"WITH Entities AS (
+                        SELECT B.Id
+                          FROM Books AS B
+                          INNER JOIN Categories AS C ON B.CategoryId = C.Id
+                          INNER JOIN Publishers AS P ON B.PublisherId = P.Id{sqlQueryConditions})
+                     SELECT COUNT(*) AS Count
+                       FROM Entities"
+                : @"SELECT COUNT(*) AS Count FROM Books";
 
-                return (rowsCount, result);
-            }
+            using var connection = _connectionProvider.OpenConnection();
+            var rowsCount = connection.ExecuteScalar<int>(rowsCountSql);
+            var result = connection.Query<BookEntity, CategoryEntity, PublisherEntity, BookEntity>(
+                sql,
+                (book, category, publisher) =>
+                {
+                    book.Category = category;
+                    book.Publisher = publisher;
+
+                    return book;
+                }, splitOn: nameof(BaseEntity.Id));
+
+            return (rowsCount, result);
         }
 
         public IEnumerable<BookEntity> GetBooksByIds(IEnumerable<long> booksIds)

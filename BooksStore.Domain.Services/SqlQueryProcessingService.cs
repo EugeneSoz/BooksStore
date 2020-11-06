@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using BooksStore.Domain.Contracts.Models.Pages;
 using BooksStore.Domain.Contracts.Services;
 
@@ -41,7 +42,7 @@ namespace BooksStore.Domain.Services
             return result;
         }
 
-        private string GenerateSearchConditions(Condition[] conditions)
+        protected virtual string GenerateSearchConditions(Condition[] conditions)
         {
             if (conditions == null)
             {
@@ -63,7 +64,7 @@ namespace BooksStore.Domain.Services
             return result.ToString();
         }
 
-        private string GenerateFilterConditions(Condition[] conditions)
+        protected virtual string GenerateFilterConditions(Condition[] conditions)
         {
             if (conditions == null)
             {
@@ -93,7 +94,7 @@ namespace BooksStore.Domain.Services
             return result.ToString();
         }
 
-        private string GenerateOrderConditions(Condition[] conditions)
+        protected virtual string GenerateOrderConditions(Condition[] conditions)
         {
             if (conditions == null)
             {
