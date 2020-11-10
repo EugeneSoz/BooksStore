@@ -37,7 +37,9 @@
             <div class="px-3 py-2 bg-light"
                  page-model="@Model.Pagination"
                  page-action="ShowBooks"
-                 page-url-category="@Model.Pagination.CurrentPage"></div>
+                 page-url-category="@Model.Category"
+                 page-url-propertyName="@Model.ToolbarViewModel.SortingProperty.PropertyName"
+                 page-url-order="@Model.ToolbarViewModel.SortingProperty.DisplayedName"></div>
         }
     </div>
 </div>

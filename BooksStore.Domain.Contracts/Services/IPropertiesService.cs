@@ -14,7 +14,7 @@ namespace BooksStore.Domain.Contracts.Services
         List<SortingProperty> GetPublisherSortingProps(QueryConditions queryConditions);
         List<SortingProperty> GetCategorySortingProps(QueryConditions queryConditions);
         List<SortingProperty> GetBooksSortingProps(QueryConditions queryConditions);
-        List<ListItem> GetSortingProperties();
+        List<SortingProperty> GetSortingProperties(QueryConditions queryConditions);
         List<ListItem> GetGridSizeProperties();
     }
 }

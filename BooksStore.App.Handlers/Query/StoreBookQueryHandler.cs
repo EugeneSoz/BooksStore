@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using BooksStore.App.Contracts.Query;
+using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Books;
+using BooksStore.Domain.Contracts.Models.Orders;
 using BooksStore.Domain.Contracts.Models.Pages;
+using BooksStore.Domain.Contracts.Models.Properties;
 using BooksStore.Domain.Contracts.Repositories;
 using BooksStore.Domain.Contracts.Services;
 using BooksStore.Domain.Contracts.ViewModels;
@@ -52,12 +55,23 @@ namespace BooksStore.App.Handlers.Query
             var result = new StoreBooksViewModel
             {
                 Books = booksGrid,
+                Category = conditions?.FilterConditions?[0].PropertyValue ?? "0",
                 Pagination = response?.Pagination,
                 ToolbarViewModel = new ToolbarViewModel
                 {
-                    SortingProperties = _propertiesService.GetGridSizeProperties(),
-                    GridSizeProperties = _propertiesService.GetSortingProperties()
-                }
+                    SortingProperties = _propertiesService.GetSortingProperties(conditions),
+                    GridSizeProperties = _propertiesService.GetGridSizeProperties(),
+                    SortingProperty = new SortingProperty(conditions.OrderConditions[0].PropertyName, 
+                        conditions.OrderConditions[0].PropertyValue),
+                    DescendingOrder = conditions.OrderConditions[0].PropertyValue == nameof(SortingOrder.Desc).ToUpper()
+                },
+                AdminFilter = new AdminFilter
+                {
+                    SelectedProperty = conditions.FilterConditions != null ? conditions.FilterConditions[0].PropertyName : string.Empty,
+                    SearchValue = string.Empty,
+                    Controller = "Store",
+                    Action = "ShowBooks"
+                },
             };
 
             return result;

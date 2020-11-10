@@ -1,4 +1,5 @@
 ﻿using BooksStore.Domain.Contracts.Models;
+using BooksStore.Domain.Contracts.Models.Books;
 using BooksStore.Domain.Contracts.Models.Pages;
 
 namespace BooksStore.App.Contracts.Query
@@ -18,6 +19,13 @@ namespace BooksStore.App.Contracts.Query
             FirstRangeValue = adminFilter?.FirstRangeValue;
             SecondRangeValue = adminFilter?.SecondRangeValue;
             FormAction = adminFilter?.FormAction ?? FormAction.Cancel;
+
+            if (pageOptions.Category > 0)
+            {
+                SelectedPropertyName = nameof(Book.CategoryId);
+                FirstRangeValue = pageOptions.Category.ToString();
+                SecondRangeValue = pageOptions.Category.ToString();
+            }
         }
 
         public int CurrentPage { get; set; }

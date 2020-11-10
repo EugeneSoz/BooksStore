@@ -41,44 +41,13 @@ namespace BooksStore.App.Client
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(null,
-                    "Publishers/Page{Page}/{PropertyName}/{Order}", new {controller = "Publishers", action = "ShowPublishers"});
-                endpoints.MapControllerRoute(null,
-                    "Publishers/Page{Page}", new {controller = "Publishers", action = "ShowPublishers"});
-                endpoints.MapControllerRoute("pub",
-                    "Publisher/CreateOrEdit/{Id:long}",
-                    new {controller = "Publishers", action = "CreatePublisher"});
+                endpoints.MapPublisherControllerRoute();
 
-                endpoints.MapControllerRoute(null,
-                    "Categories/Page{Page}/{PropertyName}/{Order}", new {controller = "Categories", action = "ShowCategories"});
-                endpoints.MapControllerRoute(null,
-                    "Categories/Page{Page}", new {controller = "Categories", action = "ShowCategories"});
-                endpoints.MapControllerRoute("pub",
-                    "Category/CreateOrEdit/{Id:long}",
-                    new {controller = "Categories", action = "CreateCategory"});
+                endpoints.MapCategoriesControllerRoute();
 
-                endpoints.MapControllerRoute(null,
-                    "Books/Page{Page}/{PropertyName}/{Order}", new {controller = "Books", action = "ShowBooks"});
-                endpoints.MapControllerRoute(null,
-                    "Books/Page{Page}", new {controller = "Books", action = "BooksCategories"});
-                endpoints.MapControllerRoute("pub",
-                    "Category/CreateOrEdit/{Id:long}",
-                    new {controller = "Categories", action = "CreateCategory"});
+                endpoints.MapBooksControllerRoute();
 
-                endpoints.MapControllerRoute("catpage",
-                    "{Category}/Page{Page}",
-                    new { Controller = "Store", action = "ShowBooks" });
-                endpoints.MapControllerRoute("page", "Page{Page}",
-                    new { Controller = "Store", action = "ShowBooks", page = 1 });
-                endpoints.MapControllerRoute("category", "{Category}",
-                    new { Controller = "Store", action = "ShowBooks", page = 1 });
-
-                endpoints.MapControllerRoute("storeBookDetails",
-                    "Books/Details/{bookId:long}",
-                    new { Controller = "Store", action = "ShowDetails" });
-                endpoints.MapControllerRoute("pagination",
-                    "Books/Page{page}",
-                    new { Controller = "Store", action = "ShowBooks" });
+                endpoints.MapStoreControllerRoute();
 
                 endpoints.MapControllerRoute(
                     name: "defalult",

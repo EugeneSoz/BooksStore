@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BooksStore.App.Contracts\BooksStore.App.Contracts.csproj" />
     <ProjectReference Include="..\BooksStore.App.Handlers\BooksStore.App.Handlers.csproj" />
+    <ProjectReference Include="..\BooksStore.Common\BooksStore.Common.csproj" />
     <ProjectReference Include="..\BooksStore.Domain.Contracts\BooksStore.Domain.Contracts.csproj" />
     <ProjectReference Include="..\BooksStore.Domain.Services\BooksStore.Domain.Services.csproj" />
     <ProjectReference Include="..\BooksStore.Persistence.Repositories\BooksStore.Persistence.Repositories.csproj" />

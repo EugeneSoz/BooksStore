@@ -14,12 +14,16 @@
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="sorting" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                @Model.SortingProperties[0].Name
+                @Model.SortingProperties[0].DisplayedName
             </a>
             <div class="dropdown-menu" aria-labelledby="sorting">
-                @foreach (var listItem in Model.SortingProperties)
+                @foreach (var property in Model.SortingProperties)
                 {
-                    <a class="dropdown-item" href="#">@listItem.Name</a>
+                    if (string.IsNullOrEmpty(property.PropertyName))
+                    {
+                        continue;
+                    }
+                    <a class="dropdown-item @(property.PropertyName == Model.SortingProperty.PropertyName && property.DescendingOrder == Model.DescendingOrder ? " active" : null)" href="@property.UrlLink">@property.DisplayedName</a>
                 }
             </div>
         </li>

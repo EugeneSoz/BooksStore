@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using BooksStore.App.Contracts.Query;
 using BooksStore.App.Handlers.Query;
 using BooksStore.Domain.Contracts.Models;
 using BooksStore.Domain.Contracts.Models.Books;
 using BooksStore.Domain.Contracts.Models.Pages;
+using BooksStore.Domain.Contracts.Models.Properties;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace BooksStore.App.Client.Controllers
 {
